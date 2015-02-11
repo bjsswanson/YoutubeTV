@@ -1,0 +1,14 @@
+{
+	"name": "Honda TV",
+	"version": "0.0.1",
+	"private": true,
+	"scripts": {
+		"start": "node app.js"
+	},
+	"dependencies": {
+		"express": "~4.8.7",
+		"debug": "~0.7.4",
+		"express-handlebars": "~1.0.1",
+		"socket.io": "~1.1.0"
+	}
+}
