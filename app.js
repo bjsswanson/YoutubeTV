@@ -15,7 +15,7 @@ app.get('/', function(req, res){
 
 console.log('Listening on port ' + port);
 
-var YoutubeTV = require('youtube-tv');
+var YoutubeTV = require('./youtube-tv');
 YoutubeTV.IO = require('socket.io').listen(app.listen(port));
-YoutubeTV.OMX = require('omxcontrol');
+YoutubeTV.OMX = require('./omxcontrol');
 YoutubeTV.Sockets.init();

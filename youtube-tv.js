@@ -6,16 +6,15 @@ YoutubeTV.Lock = false;
 
 YoutubeTV.Video = function(){
 
-	var omx = YoutubeTV.OMX;
-
 	function play( url ){
 		YoutubeTV.Current = url;
+		var omx = YoutubeTV.OMX;
 		var youtubeUrl = omx.getYoutubeUrl( url );
 		omx.start(youtubeUrl, next());
 	}
 
 	function stop(){
-		omx.stop();
+		YoutubeTV.OMX.stop();
 	}
 
 	function next(){
@@ -117,6 +116,4 @@ YoutubeTV.Sockets = function(){
 	return expose;
 }();
 
-module.exports = function() {
-	return YoutubeTV;
-};
+module.exports = YoutubeTV;

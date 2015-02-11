@@ -44,4 +44,6 @@ var OMX = function(){
 	}
 
 	return expose;
-}
+}();
+
+module.exports = OMX;
