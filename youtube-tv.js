@@ -19,6 +19,7 @@ YoutubeTV.Video = function(){
 	}
 
 	function next(){
+		console.log("Calling next");
 		var sockets = YoutubeTV.Sockets;
 		var playing = YoutubeTV.Playing;
 		var current = YoutubeTV.Current;
@@ -26,9 +27,11 @@ YoutubeTV.Video = function(){
 
 		var next = playing[index + 1]; //Next or first video if at end of list
 		if (next != undefined) {
+			console.log("Playing next");
 			play(next); //Play next
 			sockets.sendPlay(next);
 		}  else {
+			console.log("Stopping next");
 			stop(); //No videos
 			sockets.sendStop()
 		}
