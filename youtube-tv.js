@@ -24,15 +24,17 @@ YoutubeTV.Video = function(){
 		var sockets = YoutubeTV.Sockets;
 		var playing = YoutubeTV.Playing;
 		var current = YoutubeTV.Current;
-		var index = playing.indexOf(current); // -1 is next video is not found
+		var index = playing.indexOf(current); // -1 is current video is not found
 
+		var first = playing[0];
 		var next = playing[index + 1]; //Next or first video if at end of list
 		if (next != undefined) {
-			console.log("Playing next");
 			play(next); //Play next
 			sockets.sendPlay(next);
-		}  else {
-			console.log("Stopping next");
+		} else if(first != undefined) {
+			play(first); //Play next
+			sockets.sendPlay(first);
+		} else {
 			stop(); //No videos
 			sockets.sendStop()
 		}
