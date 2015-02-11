@@ -9,8 +9,9 @@ YoutubeTV.Video = function(){
 	function play( url ){
 		YoutubeTV.Current = url;
 		var omx = YoutubeTV.OMX;
-		var youtubeUrl = omx.getYoutubeUrl( url );
-		omx.start(youtubeUrl, next());
+		omx.getYoutubeUrl( url, function( youtubeUrl){
+			omx.start(youtubeUrl, next());
+		});
 	}
 
 	function stop(){
