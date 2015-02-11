@@ -10,7 +10,8 @@ YoutubeTV.Video = function(){
 		YoutubeTV.Current = url;
 		var omx = YoutubeTV.OMX;
 		omx.getYoutubeUrl( url, function( youtubeUrl){
-			omx.start(youtubeUrl, next());
+			console.log('Got youtube url')
+			omx.start(youtubeUrl, next);
 		});
 	}
 
@@ -72,21 +73,26 @@ YoutubeTV.Sockets = function(){
 
 		socket.on("addLast", function( url ){
 			playing.push(url);
-			io.sockets.emit('addedVideo', url);
+
 			if(playing.length == 1){
 				video.play(data);
+				io.sockets.emit('addedVideoAndPlaying', { index: 0, url: url });
+			} else {
+				io.sockets.emit('addedVideo', { index: playing.length - 1, url: url });
 			}
-			io.sockets.emit('addedVideoAndPlaying', { index: playing.length, url: url });
 		});
 
 		socket.on("addNext", function( url ){
 			var index = playing.indexOf(current);
 			playing.splice(index + 1, 0, url);
-			io.sockets.emit('addedVideo', { index: index + 1, url: url });
 
 			if(playing.length == 1){
 				video.play(url);
+				io.sockets.emit('addedVideoAndPlaying', { index: index + 1, url: url });
+			} else {
+				io.sockets.emit('addedVideo', { index: index + 1, url: url });
 			}
+
 		});
 
 		socket.on("addNextAndPlay", function( url ){
