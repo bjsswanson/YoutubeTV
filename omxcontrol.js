@@ -11,7 +11,9 @@ var OMX = function(){
 				var cmd = 'omxplayer -o local "' + file + '"';
 				console.log("Playing:", cmd.substr(0, 80));
 				exec(cmd, function () {
-					callback();
+					if(callback) {
+						callback();
+					}
 				});
 
 				lock = false;
