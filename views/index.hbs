@@ -30,7 +30,9 @@
         </div>
         <div class="col-md-6 col-md-offset-1 col-sm-6 col-sm-offset-1">
 			<ul id="videos" class="list-group">
-
+				{{#each playing}}
+                    <li class="list-group-item" data-url="${{this}}">{{this}}</li>
+				{{/each}}
 			</ul>
         </div>
     </div>
