@@ -50,13 +50,13 @@ function sockets(){
 
 function playing( url ){
 	$('#videos li').removeClass('active');
-	$('#' + url).addClass('active');
+	$('[data-url="' + url + '"').addClass('active');
 }
 
 function addVideoToList( data ){
 	var index = data.index;
 	var videos = $('#videos');
-	var item = $('<li></li>').prop('id', data.url).addClass('list-group-item').text(data.url);
+	var item = $('<li></li>').data('url', data.url).addClass('list-group-item').text(data.url);
 	$('#videos').insertIndex(item, index);
 }
 
