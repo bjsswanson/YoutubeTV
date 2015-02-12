@@ -69,7 +69,6 @@ YoutubeTV.Sockets = function(){
 	function bindEvents( io, socket ){
 		var video = YoutubeTV.Video;
 		var playing = YoutubeTV.Playing;
-		var current = YoutubeTV.Current;
 
 		socket.on("addLast", function( url ){
 			playing.push(url);
@@ -83,35 +82,34 @@ YoutubeTV.Sockets = function(){
 		});
 
 		socket.on("addNext", function( url ){
-			var index = playing.indexOf(current);
-			playing.splice(index + 1, 0, url);
+			var exists = playing.indexOf(url);
+			if(exists < 0){
+				var current = YoutubeTV.Current;
+				var index = playing.indexOf(current);
+				playing.splice(index + 1, 0, url);
 
-			if(playing.length == 1){
-				video.play(url);
-				io.sockets.emit('addedVideoAndPlaying', { index: index + 1, url: url });
+				if(playing.length == 1){
+					video.play(url);
+					io.sockets.emit('addedVideoAndPlaying', { index: index + 1, url: url });
+				} else {
+					io.sockets.emit('addedVideo', { index: index + 1, url: url });
+				}
 			} else {
-				io.sockets.emit('addedVideo', { index: index + 1, url: url });
+				socket.emit('alreadyExists');
 			}
-
 		});
 
 		socket.on("addNextAndPlay", function( url ){
-			var index = playing.indexOf(current);
-			playing.splice(index + 1, 0, url);
-			video.play(url);
-			io.sockets.emit('addedVideoAndPlaying',  { index: index + 1, url: url });
-		});
-
-		socket.on("savePlaylist", function( data ){
-
-		})
-
-		socket.on("loadPlaylist", function( data ){
-
-		});
-
-		socket.on("saveToPlaylist", function( data ){
-
+			var exists = playing.indexOf(url);
+			if(exists < 0) {
+				var current = YoutubeTV.Current;
+				var index = playing.indexOf(current);
+				playing.splice(index + 1, 0, url);
+				video.play(url);
+				io.sockets.emit('addedVideoAndPlaying', { index: index + 1, url: url });
+			} else {
+				socket.emit('alreadyExists');
+			}
 		});
 	};
 
