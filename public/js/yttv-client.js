@@ -56,7 +56,7 @@ function playing( url ){
 function addVideoToList( data ){
 	var index = data.index;
 	var videos = $('#videos');
-	var item = $('<li></li>').id(data.url).class('list-group-item').text(data.url);
+	var item = $('<li></li>').prop('id', data.url).class('list-group-item').text(data.url);
 	$('#videos').insertIndex(item, index);
 }
 
