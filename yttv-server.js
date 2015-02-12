@@ -71,13 +71,18 @@ YoutubeTV.Sockets = function(){
 		var playing = YoutubeTV.Playing;
 
 		socket.on("addLast", function( url ){
-			playing.push(url);
+			var exists = playing.indexOf(url);
+			if(exists < 0) {
+				playing.push(url);
 
-			if(playing.length == 1){
-				video.play(data);
-				io.sockets.emit('addedVideoAndPlaying', { index: 0, url: url });
+				if (playing.length == 1) {
+					video.play(data);
+					io.sockets.emit('addedVideoAndPlaying', { index: 0, url: url });
+				} else {
+					io.sockets.emit('addedVideo', { index: playing.length - 1, url: url });
+				}
 			} else {
-				io.sockets.emit('addedVideo', { index: playing.length - 1, url: url });
+				socket.emit('alreadyExists');
 			}
 		});
 

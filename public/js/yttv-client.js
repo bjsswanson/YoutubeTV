@@ -40,13 +40,23 @@ function sockets(){
 
 	socket.on('addedVideoAndPlaying', function( data ){
 		addVideoToList( data );
+		playing ( data.url )
 	});
+
+	socket.on('playing', function( url ){
+		playing( url )
+	})
+}
+
+function playing( url ){
+	$('#videos li').removeClass('active');
+	$('#' + url).addClass('active');
 }
 
 function addVideoToList( data ){
 	var index = data.index;
 	var videos = $('#videos');
-	var item = $('<li class="list-group-item">' + data.url + '</li>');
+	var item = $('<li></li>').id(data.url).class('list-group-item').text(data.url);
 	$('#videos').insertIndex(item, index);
 }
 
