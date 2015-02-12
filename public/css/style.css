@@ -1,12 +1,14 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+ul {
+	list-style: none;
 }
 
-a {
-  color: #00B7FF;
+.navbar-custom {
+	background-color: #dc182d;
 }
 
 .youtube {
-	padding: 20px;
+	padding: 40px;
+	border: 1px solid lightgrey;
+	border-radius: 5px;
 }
+

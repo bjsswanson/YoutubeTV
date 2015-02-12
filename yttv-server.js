@@ -10,7 +10,6 @@ YoutubeTV.Video = function(){
 		YoutubeTV.Current = url;
 		var omx = YoutubeTV.OMX;
 		omx.getYoutubeUrl( url, function( youtubeUrl){
-			console.log('Got youtube url')
 			omx.start(youtubeUrl, next);
 		});
 	}
@@ -20,7 +19,6 @@ YoutubeTV.Video = function(){
 	}
 
 	function next(){
-		console.log("Calling next");
 		var sockets = YoutubeTV.Sockets;
 		var playing = YoutubeTV.Playing;
 		var current = YoutubeTV.Current;
