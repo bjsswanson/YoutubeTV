@@ -1,25 +1,27 @@
+var URLHelper = require('url');
+var QSHelper = require('qs');
+
 var YoutubeTV = YoutubeTV || {};
 
-YoutubeTV.Current = "";
+YoutubeTV.Current = {};
 YoutubeTV.Playing = [];
 YoutubeTV.Lock = false;
 
 YoutubeTV.Video = function(){
 
-	function play( url ){
-		YoutubeTV.Current = url;
+	function play( video ){
+		YoutubeTV.Current = video;
 		var omx = YoutubeTV.OMX;
-		omx.getYoutubeUrl( url, function( youtubeUrl){
+		omx.getYoutubeUrl( video.url, function( youtubeUrl){
 			omx.start(youtubeUrl, next);
 		});
-	}
+	};
 
-	function stop(){
-		YoutubeTV.OMX.stop();
-	}
+	function stop( callback ){
+		YoutubeTV.OMX.stop( callback );
+	};
 
 	function next(){
-		var sockets = YoutubeTV.Sockets;
 		var playing = YoutubeTV.Playing;
 		var current = YoutubeTV.Current;
 		var index = playing.indexOf(current); // -1 is current video is not found
@@ -28,29 +30,19 @@ YoutubeTV.Video = function(){
 		var next = playing[index + 1]; //Next or first video if at end of list
 		if (next != undefined) {
 			play(next); //Play next
-			sockets.sendPlay(next);
+			sendPlay(next);
 		} else if(first != undefined) {
 			play(first); //Play next
-			sockets.sendPlay(first);
+			sendPlay(first);
 		} else {
 			stop(); //No videos
-			sockets.sendStop()
+			sendStop()
 		}
-	}
-
-	var expose = {
-		play: play,
-		stop: stop
 	};
 
-	return expose;
-}();
-
-YoutubeTV.Sockets = function(){
-
-	function sendPlay( url ){
+	function sendPlay( data ){
 		var io = YoutubeTV.IO;
-		io.sockets.emit('playing', url);
+		io.sockets.emit('playing', data.id);
 	}
 
 	function sendStop(){
@@ -60,70 +52,125 @@ YoutubeTV.Sockets = function(){
 
 	function sockets(){
 		var io = YoutubeTV.IO;
-		var video = YoutubeTV.Video;
 		io.sockets.on("connection", function( socket ){
 			bindEvents( io, socket );
 		});
 	};
 
 	function bindEvents( io, socket ){
-		var video = YoutubeTV.Video;
 		var playing = YoutubeTV.Playing;
 
-		socket.on("addLast", function( url ){
-			var exists = playing.indexOf(url);
-			if(exists < 0) {
-				playing.push(url);
-
-				if (playing.length == 1) {
-					video.play(data);
-					io.sockets.emit('addedVideoAndPlaying', { index: 0, url: url });
-				} else {
-					io.sockets.emit('addedVideo', { index: playing.length - 1, url: url });
-				}
-			} else {
-				socket.emit('alreadyExists');
-			}
+		socket.on("addLast", function( url ) {
+			playVideo(url, function (video) {
+				playing.push(video);
+				emitPlaying(playing.length - 1, video);
+			});
 		});
 
 		socket.on("addNext", function( url ){
-			var exists = playing.indexOf(url);
-			if(exists < 0){
+			playVideo(url, function (video) {
 				var current = YoutubeTV.Current;
 				var index = playing.indexOf(current);
-				playing.splice(index + 1, 0, url);
+				playing.splice(index + 1, 0, video);
+				emitPlaying(index + 1, video);
+			});
+		});
 
-				if(playing.length == 1){
-					video.play(url);
-					io.sockets.emit('addedVideoAndPlaying', { index: index + 1, url: url });
+		socket.on("removeVideo", function( id ){
+			if(id != undefined && id.length > 0) {
+				if (isQueued(id)) {
+					if (id === YoutubeTV.Current.id){
+						next();
+					}
+					var index = getIndex(id);
+					YoutubeTV.Playing.splice(index, 1);
+					io.sockets.emit('removingVideo', id);
+				}
+			}
+		});
+
+		socket.on("removeAll", function(){
+			stop(function(){
+				YoutubeTV.Playing = [];
+				io.sockets.emit('removingAll');
+			});
+		});
+
+		function emitPlaying( index, video ) {
+			if (isFirstVideo( video.id )) {
+				play(video);
+				io.sockets.emit('addedVideoAndPlaying', { index: index, video: video });
+			} else {
+				io.sockets.emit('addedVideo', { index: index, video: video });
+			}
+		};
+
+		function playVideo(url, callback){
+			var id = getVideoId(url);
+			if(id) {
+				if (!isQueued(id)) {
+					createVideo(url, id, callback);
 				} else {
-					io.sockets.emit('addedVideo', { index: index + 1, url: url });
+					socket.emit('alreadyExists');
 				}
 			} else {
-				socket.emit('alreadyExists');
+				socket.emit('invalidVideo')
 			}
-		});
+		}
 
-		socket.on("addNextAndPlay", function( url ){
-			var exists = playing.indexOf(url);
-			if(exists < 0) {
-				var current = YoutubeTV.Current;
-				var index = playing.indexOf(current);
-				playing.splice(index + 1, 0, url);
-				video.play(url);
-				io.sockets.emit('addedVideoAndPlaying', { index: index + 1, url: url });
-			} else {
-				socket.emit('alreadyExists');
+		function isFirstVideo(id){
+			return YoutubeTV.Playing.length > 0 && YoutubeTV.Playing[0].id === id;
+		}
+
+		function isQueued( id ){
+			return getIndex(id) > 0;
+		}
+
+		function getIndex( id ){
+			var playing = YoutubeTV.Playing;
+			for(var i = 0; i < playing.length; i++){
+				if(item.id == id){
+					return i;
+				}
 			}
-		});
+			return -1;
+		}
+
+		function getVideoId( url ){
+			var url_parts = URLHelper.parse(url, true);
+			var query = url_parts.query;
+			var query_parts = QSHelper.parse(query);
+			return query_parts['v'];
+		}
+
+		function createVideo( url, videoId, callback ){
+			if(videoId != undefined){
+				YoutubeTV.Youtube.videos.list({
+					id: videoId,
+					part: 'snippet'
+				}, function(err, data, res){
+					if(data != undefined && data.items.length > 0){
+						var item = data.items[0];
+						callback({
+							url: url,
+							id: item.id,
+							title: item.snippet.title,
+							image: item.snippet.thumbnails.default
+						});
+					} else {
+						console.log(err);
+						socket.emit('missingVideo');
+					}
+				});
+			}
+		};
 	};
+
 
 	var expose = {
 		init: function() {
 			sockets();
-		},
-		sendPlay: sendPlay,
-		sendStop: sendStop
+		}
 	};
 
 	return expose;

@@ -19,7 +19,6 @@ function buttons(){
 	$('#addNext').click( function(e){
 			e.preventDefault();
 			var link  = $('#youtubeLink').val();
-			console.log('Adding next: ', link);
 			socket.emit("addNext", link)
 		}
 	);
@@ -27,7 +26,6 @@ function buttons(){
 	$('#addLast').click( function(e){
 			e.preventDefault();
 			var link  = $('#youtubeLink').val();
-			console.log('Adding last: ', link);
 			socket.emit("addLast", link)
 		}
 	);
@@ -40,23 +38,38 @@ function sockets(){
 
 	socket.on('addedVideoAndPlaying', function( data ){
 		addVideoToList( data );
-		playing ( data.url )
+		playing ( data.id )
 	});
 
-	socket.on('playing', function( url ){
-		playing( url )
+	socket.on('playing', function( id ){
+		playing( id )
+	});
+
+	socket.on('removingVideo', function( id ){
+		remove( id );
+	});
+
+	socket.on('removingAll', function(){
+		$('#videos li').remove();
 	})
 }
 
-function playing( url ){
+function playing( id ){
 	$('#videos li').removeClass('active');
-	$('#videos [data-url="' + url + '"]').addClass('active');
+	$('#' + id).addClass('active');
+}
+
+function remove( id ){
+	$('#' + id).remove();
 }
 
 function addVideoToList( data ){
 	var index = data.index;
-	var videos = $('#videos');
-	var item = $('<li></li>').attr('data-url', data.url).addClass('list-group-item').text(data.url);
+	var item = $('<li></li>').attr('id', data.video.id).addClass('list-group-item');
+	var image = $('<img/>').attr('src', data.video.thumbnails.default);
+	var text= $('<span></span>').text(data.video.title);
+	item.append(image);
+	item.append(text);
 	$('#videos').insertIndex(item, index);
 }
 

@@ -1,12 +1,19 @@
+var fs = require('fs')
 var express = require('express');
 var app = express();
 
 var port = 3000;
 
+
+var key = fs.readFileSync('api.key').toString();
+var google = require('googleapis');
+google.options({ auth: key });
+
 var YoutubeTV = require('./yttv-server');
 YoutubeTV.IO = require('socket.io').listen(app.listen(port));
 YoutubeTV.OMX = require('./omxcontrol');
-YoutubeTV.Sockets.init();
+YoutubeTV.Youtube = google.youtube('v3');
+YoutubeTV.Video.init();
 
 var expressHbs = require('express-handlebars');
 
