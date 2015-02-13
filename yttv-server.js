@@ -101,9 +101,6 @@ YoutubeTV.Video = function(){
 			console.log('removing Video', id);
 			if(id != undefined && id.length > 0) {
 				if (isQueued(id)) {
-					if (id === YoutubeTV.Current.id){
-						next();
-					}
 					var index = getIndex(id);
 					YoutubeTV.Playing.splice(index, 1);
 					io.sockets.emit('removingVideo', id);
