@@ -32,11 +32,54 @@
 			<ul id="videos" class="list-group">
 				{{#each playing}}
                     <li id="{{this.id}}" class="list-group-item">
-						<img src="{{this.image.url}}"/>
-						<span>{{this.title}}</span>
+                        <div class="media">
+                            <div class="media-left">
+                                <a href="#">
+                                    <img class="media-object" src="{{this.image.url}}">
+                                </a>
+                            </div>
+                            <div class="media-body">
+                                <h4 class="media-heading">{{this.title}}</h4>
+                            </div>
+							<div class="media-right">
+                                <div class="btn-group-vertical" role="group">
+                                    <button type="button" class="btn btn-default btn-lg play" data-id="{{this.id}}">
+										<span class="glyphicon glyphicon-play-circle"></span>
+									</button>
+                                    <button type="button" class="btn btn-default btn-lg remove" data-id="{{this.id}}">
+										<span class="glyphicon glyphicon-remove-circle"></span>
+									</button>
+								</div>
+							</div>
+                        </div>
 					</li>
 				{{/each}}
 			</ul>
         </div>
     </div>
 </div>
+
+<script id="list-item-template" type="text/x-handlebars-template">
+	<li id="\{{this.id}}" class="list-group-item">
+        <div class="media">
+            <div class="media-left">
+                <a href="#">
+                    <img class="media-object" src="\{{this.image.url}}">
+                </a>
+            </div>
+            <div class="media-body">
+                <h4 class="media-heading">\{{this.title}}</h4>
+            </div>
+            <div class="media-right">
+                <div class="btn-group-vertical" role="group">
+                    <button type="button" class="btn btn-default btn-lg play">
+                        <span class="glyphicon glyphicon-play-circle"></span>
+                    </button>
+                    <button type="button" class="btn btn-default btn-lg remove">
+                        <span class="glyphicon glyphicon-remove-circle"></span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </li>
+</script>
