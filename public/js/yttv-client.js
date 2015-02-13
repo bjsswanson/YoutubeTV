@@ -2,6 +2,7 @@ var socket = io.connect();
 $(function() {
 
 	$(document).on('click', '#videos .play', function(e) {
+		console.log(e);
 		var li = $(e.currentTarget).closest('li');
 		var id = li.attr('id');
 		socket.emit('play', id)

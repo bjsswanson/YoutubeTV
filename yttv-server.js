@@ -80,8 +80,10 @@ YoutubeTV.Video = function(){
 
 		socket.on("play", function( id ){
 			if(isQueued(id)){
+				console.log("Id:", id)
 				var index = getIndex(id);
 				var video = playing[index];
+				console.log("")
 				stop(function(){
 					play(video);
 				});
