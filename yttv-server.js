@@ -59,6 +59,9 @@ YoutubeTV.Video = function(){
 
 	function bindEvents( io, socket ){
 		var playing = YoutubeTV.Playing;
+		var current = YoutubeTV.Current;
+
+		socket.emit("playing", current.id);
 
 		socket.on("addLast", function( url ) {
 			playVideo(url, function (video) {
@@ -123,12 +126,13 @@ YoutubeTV.Video = function(){
 		}
 
 		function isQueued( id ){
-			return getIndex(id) > 0;
+			return getIndex(id) > -1;
 		}
 
 		function getIndex( id ){
 			var playing = YoutubeTV.Playing;
 			for(var i = 0; i < playing.length; i++){
+				var item = playing[i];
 				if(item.id == id){
 					return i;
 				}

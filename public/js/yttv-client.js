@@ -18,15 +18,19 @@ $.fn.insertIndex = function (item, i) {
 function buttons(){
 	$('#addNext').click( function(e){
 			e.preventDefault();
-			var link  = $('#youtubeLink').val();
-			socket.emit("addNext", link)
+			var input = $('#youtubeLink');
+			var link  = input.val();
+			socket.emit("addNext", link);
+			input.val("");
 		}
 	);
 
 	$('#addLast').click( function(e){
 			e.preventDefault();
-			var link  = $('#youtubeLink').val();
-			socket.emit("addLast", link)
+			var input = $('#youtubeLink');
+			var link  = input.val();
+			socket.emit("addLast", link);
+			input.val("");
 		}
 	);
 }
@@ -38,7 +42,7 @@ function sockets(){
 
 	socket.on('addedVideoAndPlaying', function( data ){
 		addVideoToList( data );
-		playing ( data.id )
+		playing ( data.video.id )
 	});
 
 	socket.on('playing', function( id ){
@@ -66,7 +70,7 @@ function remove( id ){
 function addVideoToList( data ){
 	var index = data.index;
 	var item = $('<li></li>').attr('id', data.video.id).addClass('list-group-item');
-	var image = $('<img/>').attr('src', data.video.thumbnails.default);
+	var image = $('<img/>').attr('src', data.video.image.url);
 	var text= $('<span></span>').text(data.video.title);
 	item.append(image);
 	item.append(text);
