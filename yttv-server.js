@@ -14,6 +14,7 @@ YoutubeTV.Video = function(){
 		YoutubeTV.Current = video;
 		var omx = YoutubeTV.OMX;
 		omx.getYoutubeUrl( video.url, function( youtubeUrl){
+			console.log('getYoutubeUrl');
 			omx.start(youtubeUrl, next);
 		});
 	};
