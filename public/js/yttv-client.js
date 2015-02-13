@@ -2,7 +2,6 @@ var socket = io.connect();
 $(function() {
 
 	$(document).on('click', '#videos .play', function(e) {
-		console.log(e);
 		var li = $(e.currentTarget).closest('li');
 		var id = li.attr('id');
 		socket.emit('play', id)
@@ -51,28 +50,23 @@ $(function() {
 
 	function sockets() {
 		socket.on('addedVideo', function (data) {
-			console.log('addedVideo');
 			addVideoToList(data);
 		});
 
 		socket.on('addedVideoAndPlaying', function (data) {
-			console.log('addedVideoAndPlaying');
 			addVideoToList(data);
 			playing(data.video.id)
 		});
 
 		socket.on('playing', function (id) {
-			console.log('playing');
 			playing(id)
 		});
 
 		socket.on('removingVideo', function (id) {
-			console.log('removing');
 			remove(id);
 		});
 
 		socket.on('removingAll', function () {
-			console.log('removingAll');
 			$('#videos li').remove();
 		})
 	}
@@ -91,7 +85,6 @@ $(function() {
 
 	function addVideoToList(data) {
 		var index = data.index;
-		console.log(data.video);
 		var item = template(data.video);
 		$('#videos').insertIndex(item, index);
 	}
