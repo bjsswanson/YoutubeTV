@@ -91,10 +91,7 @@ YoutubeTV.Video = function(){
 				console.log("Id:", id)
 				var index = getIndex(id);
 				var video = playing[index];
-				console.log("")
-				stop(function(){
-					play(video);
-				});
+				play(video);
 			}
 		});
 
