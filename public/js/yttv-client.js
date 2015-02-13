@@ -51,23 +51,28 @@ $(function() {
 
 	function sockets() {
 		socket.on('addedVideo', function (data) {
+			console.log('addedVideo');
 			addVideoToList(data);
 		});
 
 		socket.on('addedVideoAndPlaying', function (data) {
+			console.log('addedVideoAndPlaying');
 			addVideoToList(data);
 			playing(data.video.id)
 		});
 
 		socket.on('playing', function (id) {
+			console.log('playing');
 			playing(id)
 		});
 
 		socket.on('removingVideo', function (id) {
+			console.log('removing');
 			remove(id);
 		});
 
 		socket.on('removingAll', function () {
+			console.log('removingAll');
 			$('#videos li').remove();
 		})
 	}

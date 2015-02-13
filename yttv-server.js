@@ -10,6 +10,7 @@ YoutubeTV.Lock = false;
 YoutubeTV.Video = function(){
 
 	function play( video ){
+		console.log('playing', video);
 		YoutubeTV.Current = video;
 		var omx = YoutubeTV.OMX;
 		omx.getYoutubeUrl( video.url, function( youtubeUrl){
@@ -22,6 +23,7 @@ YoutubeTV.Video = function(){
 	};
 
 	function next(){
+		console.log('next');
 		var playing = YoutubeTV.Playing;
 		var current = YoutubeTV.Current;
 		var index = playing.indexOf(current); // -1 is current video is not found
@@ -41,11 +43,13 @@ YoutubeTV.Video = function(){
 	};
 
 	function sendPlay( data ){
+		console.log('sendPlay');
 		var io = YoutubeTV.IO;
 		io.sockets.emit('playing', data.id);
 	}
 
 	function sendStop(){
+		console.log('sendStor');
 		var io = YoutubeTV.IO;
 		io.sockets.emit('stop');
 	}
@@ -60,6 +64,7 @@ YoutubeTV.Video = function(){
 	function bindEvents( io, socket ){
 		var playing = YoutubeTV.Playing;
 
+		console.log('Binding Events');
 		socket.emit("playing", YoutubeTV.Current.id);
 
 		socket.on("addLast", function( url ) {
@@ -70,6 +75,7 @@ YoutubeTV.Video = function(){
 		});
 
 		socket.on("addNext", function( url ){
+			console.log('addNext', url);
 			addVideo(url, function (video) {
 				var current = YoutubeTV.Current;
 				var index = playing.indexOf(current);
@@ -79,6 +85,7 @@ YoutubeTV.Video = function(){
 		});
 
 		socket.on("play", function( id ){
+			console.log('Play!!!', id);
 			if(isQueued(id)){
 				console.log("Id:", id)
 				var index = getIndex(id);
@@ -91,6 +98,7 @@ YoutubeTV.Video = function(){
 		});
 
 		socket.on("removeVideo", function( id ){
+			console.log('removing Video', id);
 			if(id != undefined && id.length > 0) {
 				if (isQueued(id)) {
 					if (id === YoutubeTV.Current.id){
@@ -104,6 +112,7 @@ YoutubeTV.Video = function(){
 		});
 
 		socket.on("removeAll", function(){
+			console.log('removing all');
 			stop(function(){
 				YoutubeTV.Playing.length = 0;
 				io.sockets.emit('removingAll');
