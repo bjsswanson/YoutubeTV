@@ -2,7 +2,7 @@ var fs = require('fs')
 var express = require('express');
 var app = express();
 
-var port = 3000;
+var port = 7000;
 
 
 var key = fs.readFileSync('api.key').toString();
