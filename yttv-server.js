@@ -82,7 +82,9 @@ YoutubeTV.Video = function(){
 			if(isQueued(id)){
 				var index = getIndex(id);
 				var video = playing[index];
-				play(video);
+				stop(function(){
+					play(video);
+				});
 			}
 		});
 
