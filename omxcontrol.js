@@ -7,7 +7,7 @@ var OMX = function(){
 	function start( file, callback ) {
 		if(!lock) {
 			lock = true;
-			stop(function () {
+			//stop(function () {
 				var cmd = 'omxplayer -o local "' + file + '"';
 				console.log("Playing:", cmd.substr(0, 80));
 				exec(cmd, function () {
@@ -17,7 +17,7 @@ var OMX = function(){
 				});
 
 				lock = false;
-			});
+			//});
 		}
 	};
 
