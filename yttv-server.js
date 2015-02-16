@@ -28,7 +28,7 @@ YoutubeTV.Video = function(){
 		var next = playing[index + 1]; //Next or first video if at end of list
 		if(YoutubeTV.Next != undefined){
 			play(YoutubeTV.Next);
-			sendPlay(YoutubeTV.next);
+			sendPlay(YoutubeTV.Next);
 			YoutubeTV.Next = undefined;
 		} else if (next != undefined) {
 			play(next); //Play next
