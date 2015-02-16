@@ -95,6 +95,7 @@ YoutubeTV.Video = function(){
 					var index = getIndex(id);
 					YoutubeTV.Playing.splice(index, 1);
 					io.sockets.emit('removingVideo', id);
+					stop();
 				}
 			}
 		});
