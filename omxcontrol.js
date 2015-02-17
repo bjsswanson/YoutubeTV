@@ -7,6 +7,7 @@ var OMX = function(){
 			var cmd = child_process.spawn("omxplayer", ["-o", "local", file]);
 			console.log("Playing:", file.substr(0, 80));
 			cmd.on('exit', function (code, signal) {
+				console.log("Exiting:", code, ",", signal);
 				cmd.kill();
 				if (code == 0 && callback) {
 					callback();
@@ -17,6 +18,7 @@ var OMX = function(){
 
 	function stop( callback ) {
 		exec('killall omxplayer', callback);
+		exec('killall omxplayer.bin', callback);
 	};
 
 	function getYoutubeUrl(video, callback) {
