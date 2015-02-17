@@ -13,6 +13,14 @@ $(function() {
 		socket.emit('removeVideo', id)
 	})
 
+	$(document).on('click', '#playCurrent', function(e) {
+		socket.emit('playCurrent')
+	})
+
+	$(document).on('click', '#stopCurrent', function(e) {
+		socket.emit('stopCurrent')
+	})
+
 	$.fn.insertIndex = function (item, i) {
 		if (i === 0) {
 			this.prepend(item);
