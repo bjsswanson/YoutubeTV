@@ -17,7 +17,6 @@ var OMX = function(){
 	};
 
 	function stop( callback ) {
-		exec('killall omxplayer', callback);
 		exec('killall omxplayer.bin', callback);
 	};
 
