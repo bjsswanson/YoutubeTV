@@ -17,8 +17,7 @@ var OMX = function(){
 	};
 
 	function stop( callback ) {
-		exec('killall omxplayer.bin');
-		exec('killall omxplayer', callback);
+		exec('pkill -f omxplayer', callback);
 	};
 
 	function getYoutubeUrl(video, callback) {
