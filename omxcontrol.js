@@ -6,8 +6,7 @@ var OMX = function(){
 		stop(function () {
 			var cmd = child_process.spawn("omxplayer", ["-o", "local", file]);
 			console.log("Playing:", file.substr(0, 80));
-			cmd.stdout.on('close', function (code, signal) {
-				console.log("Closing: ", code);
+			cmd.stdout.on('exit', function (code, signal) {
 				cmd.kill();
 				if (code == 0 && callback) {
 					callback();
