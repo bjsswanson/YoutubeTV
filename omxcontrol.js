@@ -9,7 +9,7 @@ var OMX = function(){
 			cmd.stdout.on('close', function (code, signal) {
 				console.log("Closing: ", code);
 				cmd.kill();
-				if (code && callback) {
+				if (code == 0 && callback) {
 					callback();
 				}
 			});
@@ -17,7 +17,7 @@ var OMX = function(){
 	};
 
 	function stop( callback ) {
-		exec('killall omxplayer.bin', callback);
+		exec('killall omxplayer', callback);
 	};
 
 	function getYoutubeUrl(video, callback) {
