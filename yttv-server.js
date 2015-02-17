@@ -72,7 +72,7 @@ YoutubeTV.Video = function(){
 		socket.on("addLast", function( url ) {
 			addVideo(url, function (video) {
 				playing.push(video);
-				emitPlaying(playing.length - 1, video);
+				playVideo(playing.length - 1, video);
 			});
 		});
 
@@ -81,7 +81,7 @@ YoutubeTV.Video = function(){
 				var current = YoutubeTV.Current;
 				var index = playing.indexOf(current);
 				playing.splice(index + 1, 0, video);
-				emitPlaying(index + 1, video);
+				playVideo(index + 1, video);
 			});
 		});
 
@@ -130,7 +130,7 @@ YoutubeTV.Video = function(){
 			});
 		});
 
-		function emitPlaying( index, video ) {
+		function playVideo( index, video ) {
 			if (isFirstVideo( video.id )) {
 				play(video);
 				io.sockets.emit('addedVideoAndPlaying', { index: index, video: video });
