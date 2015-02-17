@@ -12,6 +12,7 @@ YoutubeTV.Video = function(){
 		if (item.type == 'video') {
 			YoutubeTV.Current = item;
 			omx.getYoutubeUrl(item.url, function ( youtubeUrl ) {
+				emitPlaying(item);
 				omx.start(youtubeUrl, next);
 			});
 		} else if(item.type == 'playlist'){
@@ -27,6 +28,7 @@ YoutubeTV.Video = function(){
 	};
 
 	function stop( callback ){
+		emitStopping()
 		YoutubeTV.OMX.stop(callback);
 	};
 
@@ -38,13 +40,10 @@ YoutubeTV.Video = function(){
 		var next = playing[index + 1]; //Next or first video if at end of list
 		if (next != undefined) {
 			play(next); //Play next
-			emitPlaying(next);
 		} else if(first != undefined) {
 			play(first); //Play next
-			emitPlaying(first);
 		} else {
 			stop(); //No videos
-			emitStopping()
 		}
 	};
 
