@@ -11,8 +11,8 @@ YoutubeTV.Video = function(){
 		var omx = YoutubeTV.OMX;
 		if (item.type == 'video') {
 			YoutubeTV.Current = item;
+			emitPlaying(item);
 			omx.getYoutubeUrl(item.url, function ( youtubeUrl ) {
-				emitPlaying(item);
 				omx.start(youtubeUrl, next);
 			});
 		} else if(item.type == 'playlist'){
@@ -89,9 +89,7 @@ YoutubeTV.Video = function(){
 			if(isQueued(id)){
 				var index = getIndex(id);
 				var video = playing[index];
-				stop(function(){
-					play(video);
-				});
+				play(video);
 			}
 		});
 
