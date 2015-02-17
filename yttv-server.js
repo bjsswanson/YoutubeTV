@@ -26,33 +26,29 @@ YoutubeTV.Video = function(){
 
 		var first = playing[0];
 		var next = playing[index + 1]; //Next or first video if at end of list
-		if(YoutubeTV.Next != undefined){
-			play(YoutubeTV.Next);
-			sendPlay(YoutubeTV.Next);
-			YoutubeTV.Next = undefined;
-		} else if (next != undefined) {
+		if (next != undefined) {
 			play(next); //Play next
-			sendPlay(next);
+			emitPlaying(next);
 		} else if(first != undefined) {
 			play(first); //Play next
-			sendPlay(first);
+			emitPlaying(first);
 		} else {
 			stop(); //No videos
-			sendStop()
+			emitStopping()
 		}
 	};
 
-	function sendPlay( data ){
+	function emitPlaying( data ){
 		var io = YoutubeTV.IO;
 		io.sockets.emit('playing', data.id);
 	}
 
-	function sendStop(){
+	function emitStopping(){
 		var io = YoutubeTV.IO;
 		io.sockets.emit('stop');
 	}
 
-	function sockets(){
+	function initSockets(){
 		var io = YoutubeTV.IO;
 		io.sockets.on("connection", function( socket ){
 			bindEvents( io, socket );
@@ -84,8 +80,9 @@ YoutubeTV.Video = function(){
 			if(isQueued(id)){
 				var index = getIndex(id);
 				var video = playing[index];
-				YoutubeTV.Next = video;
-				stop();
+				stop(function(){
+					play(video);
+				});
 			}
 		});
 
@@ -96,7 +93,11 @@ YoutubeTV.Video = function(){
 					YoutubeTV.Playing.splice(index, 1);
 					io.sockets.emit('removingVideo', id);
 					if(YoutubeTV.Current && YoutubeTV.Current.id == id){
-						stop();
+						stop(function(){
+							if(YoutubeTV.Playing.length > 0){
+								next();
+							}
+						});
 					}
 				}
 			}
@@ -131,32 +132,6 @@ YoutubeTV.Video = function(){
 			}
 		}
 
-		function isFirstVideo(id){
-			return YoutubeTV.Playing.length > 0 && YoutubeTV.Playing[0].id === id;
-		}
-
-		function isQueued( id ){
-			return getIndex(id) > -1;
-		}
-
-		function getIndex( id ){
-			var playing = YoutubeTV.Playing;
-			for(var i = 0; i < playing.length; i++){
-				var item = playing[i];
-				if(item.id == id){
-					return i;
-				}
-			}
-			return -1;
-		}
-
-		function getVideoId( url ){
-			var url_parts = URLHelper.parse(url, true);
-			var query = url_parts.query;
-			var query_parts = QSHelper.parse(query);
-			return query_parts['v'];
-		}
-
 		function createVideo( url, videoId, callback ){
 			if(videoId != undefined){
 				YoutubeTV.Youtube.videos.list({
@@ -179,10 +154,35 @@ YoutubeTV.Video = function(){
 		};
 	};
 
+	function isFirstVideo(id){
+		return YoutubeTV.Playing.length > 0 && YoutubeTV.Playing[0].id === id;
+	}
+
+	function isQueued( id ){
+		return getIndex(id) > -1;
+	}
+
+	function getIndex( id ){
+		var playing = YoutubeTV.Playing;
+		for(var i = 0; i < playing.length; i++){
+			var item = playing[i];
+			if(item.id == id){
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	function getVideoId( url ){
+		var url_parts = URLHelper.parse(url, true);
+		var query = url_parts.query;
+		var query_parts = QSHelper.parse(query);
+		return query_parts['v'];
+	}
 
 	var expose = {
 		init: function() {
-			sockets();
+			initSockets();
 		}
 	};
 

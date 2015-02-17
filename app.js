@@ -4,7 +4,6 @@ var app = express();
 
 var port = 7000;
 
-
 var key = fs.readFileSync('api.key').toString();
 var google = require('googleapis');
 google.options({ auth: key });
@@ -26,4 +25,3 @@ app.get('/', function(req, res){
 });
 
 console.log('Listening on port ' + port);
-

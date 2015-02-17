@@ -2,23 +2,17 @@ var child_process = require('child_process');
 var exec = child_process.exec;
 
 var OMX = function(){
-	var lock = false; // Not sure if I need the lock. Try without and see what spamming does.
-
 	function start( file, callback ) {
-		if(!lock) {
-			lock = true;
-			stop(function () {
-				var cmd = 'omxplayer -o local "' + file + '"';
-				console.log("Playing:", cmd.substr(0, 80));
-				exec(cmd, function () {
-					if (callback) {
-						callback();
-					}
-				});
-
-				lock = false;
+		stop(function () {
+			var cmd = child_process.spawn("omxplayer", ["-o", "local", file]);
+			console.log("Playing:", file.substr(0, 80));
+			cmd.stdout.on('exit', function (code, signal) {
+				cmd.kill();
+				if (code && callback) {
+					callback();
+				}
 			});
-		}
+		});
 	};
 
 	function stop( callback ) {
