@@ -82,7 +82,7 @@ YoutubeTV.Video = function(){
 
 		socket.on("addLast", function( url ) {
 			addVideo(url, function (videos) {
-				forEach(videos, function(video){
+				videos.forEach(function(video){
 					playing.push(video);
 					emitAdding(playing.length - 1, video);
 				});
@@ -93,7 +93,7 @@ YoutubeTV.Video = function(){
 			addVideo(url, function (videos) {
 				var current = YoutubeTV.Current;
 				var index = playing.indexOf(current);
-				forEach(videos, function(video) {
+				videos.forEach(function(video) {
 					playing.splice(index + 1, 0, video);
 					emitAdding(index + 1, video);
 					index++;
