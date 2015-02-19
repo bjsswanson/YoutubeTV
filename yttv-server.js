@@ -33,8 +33,12 @@ YoutubeTV.Video = function(){
 		var first = playing[0];
 		var next = playing[index + 1]; //Next or first video if at end of list
 		if(isPastStopTime()){ //TODO: Add holding image while off
+			console.log("Past stop time. Stopping.");
 			stop(function(){
-				setTimeout(next, millisToStart());
+				setTimeout(function(){
+					console.log("Past start time. Resuming.");
+					next();
+				}, millisToStart());
 			});
 		} else if (next != undefined) {
 			play(next); //Play next
