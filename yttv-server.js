@@ -60,6 +60,7 @@ YoutubeTV.Video = function(){
 	}
 
 	function emitAdding( index, video ) {
+		var io = YoutubeTV.IO;
 		if (isFirstVideo( video.id )) {
 			play(video);
 			io.sockets.emit('addedVideoAndPlaying', { index: index, video: video });
