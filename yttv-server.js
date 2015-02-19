@@ -26,13 +26,13 @@ YoutubeTV.Video = function(){
 		YoutubeTV.OMX.stop(callback);
 	};
 
-	function next(){ //Switch to playlist + video logic
+	function next(){
 		var playing = YoutubeTV.Playing;
 		var current = YoutubeTV.Current;
 		var index = playing.indexOf(current); // -1 is current video is not found
 		var first = playing[0];
 		var next = playing[index + 1]; //Next or first video if at end of list
-		if(isPastStopTime()){
+		if(isPastStopTime()){ //TODO: Add holding image while off
 			stop(function(){
 				setTimeout(next, millisToStart());
 			});
