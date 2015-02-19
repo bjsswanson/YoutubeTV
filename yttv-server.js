@@ -181,28 +181,23 @@ YoutubeTV.Video = function(){
 
 	function createPlaylist( playlistId, callback ){
 		if(playlistId != undefined){
-			YoutubeTV.Youtube.videos.list({
+			YoutubeTV.Youtube.playlistItems.list({
 				playlistId: playlistId,
 				part: 'snippet',
 				maxResults:  50
 			}, function(err, data, res){
 				if(data != undefined && data.items.length > 0){
-					var playlist = {
-						type: 'playlist',
-						id: playlistId,
-						videos:[]
-					}
-
-					data.forEach(function(item){
+					var videos = [];
+					data.items.forEach(function(item){
 						videos.push({
-							url: 'https://www.youtube.com/watch?v=' + item.resourceId.videoId,
-							id: item.resourceId.videoId,
+							url: 'https://www.youtube.com/watch?v=' + item.snippet.resourceId.videoId,
+							id: item.snippet.resourceId.videoId,
 							title: item.snippet.title,
 							image: item.snippet.thumbnails.default
 						})
 					});
 
-					callback(playlist);
+					callback(videos);
 				}
 			});
 		}
