@@ -54,6 +54,11 @@ $(function() {
 				input.val("");
 			}
 		);
+
+		$('#removeAllConfirmed').click(function(e){
+			$('#confirmRemoveAll').modal('hide');
+			socket.emit("removeAll");
+		});
 	}
 
 	function sockets() {
