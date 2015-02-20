@@ -193,7 +193,7 @@ YoutubeTV.Video = function(){
 							url: 'https://www.youtube.com/watch?v=' + item.snippet.resourceId.videoId,
 							id: item.snippet.resourceId.videoId,
 							title: item.snippet.title,
-							image: item.snippet.thumbnails.default
+							image: item.snippet.thumbnails != undefined ? item.snippet.thumbnails.default : { url : ""}
 						})
 					});
 
