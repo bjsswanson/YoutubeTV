@@ -35,12 +35,13 @@ YoutubeTV.Video = function(){
 		var first = playing[0];
 		var nextVideo = playing[index + 1]; //Next or first video if at end of list
 		if(isPastStopTime()){ //TODO: Add holding image while off
-			console.log("Past stop time. Stopping.");
+			var millis = millisToStart();
+			console.log("Past stop time. Stopping. Will resume in: ", millisToHours(millis));
 			stop(function(){
 				setTimeout(function(){
 					console.log("Past start time. Resuming.");
 					next();
-				}, millisToStart());
+				}, millis);
 			});
 		} else if (nextVideo != undefined) {
 			play(nextVideo); //Play nextVideo
@@ -256,6 +257,13 @@ YoutubeTV.Video = function(){
 		startTime.setHours(startHour);
 		startTime.setMinutes(startMinute);
 		return startTime.getTime() - now.getTime();
+	}
+
+	function millisToHours(ms) {
+		hours = Math.floor(ms / 3600000), // 1 Hour = 36000 Milliseconds
+			minutes = Math.floor((ms % 3600000) / 60000), // 1 Minutes = 60000 Milliseconds
+			seconds = Math.floor(((ms % 360000) % 60000) / 1000) // 1 Second = 1000 Milliseconds
+		return hours + ":" + minutes + ":" + seconds;
 	}
 
 	var expose = {
