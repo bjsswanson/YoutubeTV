@@ -245,6 +245,8 @@ YoutubeTV.Video = function(){
 		var current_minute = date.getMinutes();
 		var before_time = current_hour <= startHour && current_minute <= startMinute;
 		var after_time = current_hour >= endHour && current_minute >= endMinute;
+		console.log("Before: ", before_time);
+		console.log("After: ", after_time);
 		return before_time || after_time;
 	}
 
