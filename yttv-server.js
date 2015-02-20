@@ -240,24 +240,22 @@ YoutubeTV.Video = function(){
 
 	function isPastStopTime(){
 		var date = new Date();
-		var current_day = date.getDay();
 		var current_hour = date.getHours();
 		var current_minute = date.getMinutes();
-		var workday = current_day >= startDay && current_day <= endDay;
 		var before_time = current_hour <= startHour && current_minute <= startMinute;
 		var after_time = current_hour >= endHour && current_minute >= endMinute;
-		return workday && (before_time || after_time) ;
+		return before_time || after_time;
 	}
 
 
 	function millisToStart(){
-		var start = new Date();
-		var end = new Date();
-		var nextDay = start.getDay() >= endDay ? 3 : 1;
-		end.setDate(end.getDate() + nextDay);
-		end.setHours(startHour);
-		end.setMinutes(startMinute);
-		return end.getTime() - start.getTime();
+		var now = new Date();
+		var startTime = new Date();
+		var startDay = now.getDay() >= endDay ? 3 : 1; //TODO: Improve
+		startTime.setDate(startTime.getDate() + startDay);
+		startTime.setHours(startHour);
+		startTime.setMinutes(startMinute);
+		return startTime.getTime() - now.getTime();
 	}
 
 	var expose = {
