@@ -79,6 +79,10 @@ $(function() {
 			remove(id);
 		});
 
+		socket.on('stop', function(){
+			$('#videos li').removeClass('active');
+		})
+
 		socket.on('removingAll', function () {
 			$('#videos li').remove();
 		})
