@@ -243,13 +243,10 @@ YoutubeTV.Video = function(){
 		var date = new Date();
 		var current_hour = date.getHours();
 		var current_minute = date.getMinutes();
-		var before_time = current_hour <= startHour && current_minute <= startMinute;
-		var after_time = current_hour >= endHour && current_minute >= endMinute;
-		console.log("Before: ", before_time);
-		console.log("After: ", after_time);
+		var before_time = current_hour < startHour || (current_hour == startHour && current_minute < startMinute);
+		var after_time = current_hour > endHour || (current_hour == endHour && current_minute > endMinute);
 		return before_time || after_time;
 	}
-
 
 	function millisToStart(){
 		var now = new Date();
