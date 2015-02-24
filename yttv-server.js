@@ -251,7 +251,7 @@ YoutubeTV.Video = function(){
 	function millisToStart(){
 		var now = new Date();
 		var startTime = new Date();
-		var startDay = (7 - now.getDay() + startDay) % 7; //Days till start (including start day)
+		var startDay = now.getDay() == endDay ? (7 - endDay + startDay) % 7 : 1; //If today is the last day - days till start (including start day) else tomorrow (1)
 		startTime.setDate(startTime.getDate() + startDay);
 		startTime.setHours(startHour);
 		startTime.setMinutes(startMinute);
