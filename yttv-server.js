@@ -87,8 +87,10 @@ YoutubeTV.Video = function(){
 		socket.on("addLast", function( url ) {
 			addVideo(url, function (videos) {
 				videos.forEach(function(video){
-					playing.push(video);
-					emitAdding(playing.length - 1, video);
+					if(!isQueued(video.id)) {
+						playing.push(video);
+						emitAdding(playing.length - 1, video);
+					}
 				});
 			});
 		});
@@ -98,9 +100,11 @@ YoutubeTV.Video = function(){
 				var current = YoutubeTV.Current;
 				var index = playing.indexOf(current);
 				videos.forEach(function(video) {
-					playing.splice(index + 1, 0, video);
-					emitAdding(index + 1, video);
-					index++;
+					if (!isQueued(video.id)) {
+						playing.splice(index + 1, 0, video);
+						emitAdding(index + 1, video);
+						index++;
+					}
 				});
 			});
 		});
@@ -149,17 +153,13 @@ YoutubeTV.Video = function(){
 		});
 	};
 
-	function addVideo(url, callback){
+	function addVideo( url, callback ){
 		var playlistId = getPlaylistId(url);
 		var videoId = getVideoId(url);
 		if(playlistId){
-			if(!isQueued(playlistId)){
-				createPlaylist(playlistId, callback);
-			}
+			createPlaylist(playlistId, callback);
 		} else if(videoId) {
-			if (!isQueued(videoId)) {
-				createVideo(videoId, callback);
-			}
+			createVideo(videoId, callback);
 		}
 	}
 
