@@ -4,7 +4,7 @@ var app = express();
 
 var port = 7000;
 
-var key = fs.readFileSync('api.key').toString();
+var key = fs.readFileSync(__dirname + '/api.key').toString();
 var google = require('googleapis');
 google.options({ auth: key });
 
