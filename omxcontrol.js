@@ -21,7 +21,7 @@ var OMX = function(){
 	};
 
 	function getYoutubeUrl(video, callback) {
-		var yt = child_process.spawn("youtube-dl", ["-f", "38/37/46/22/35/34/18/6/5/17/13", "-g", video]);
+		var yt = child_process.spawn("youtube-dl", ["--write-srt", "--srt-lang en", "-f", "38/37/46/22/35/34/18/6/5/17/13", "-g", video]);
 		var url = "";
 		yt.stdout.on('data', function (data) {
 			url += data.toString('utf8');
