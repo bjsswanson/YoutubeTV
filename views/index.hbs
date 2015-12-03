@@ -14,24 +14,54 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-md-5 col-sm-5">
-			<div class="youtube">
-				<form class="form-horizontal">
-                    <div class="form-group">
-						<div class="input-group-lg">
-							<input type="text" class="form-control" id="youtubeLink" placeholder="Youtube Video or Playlist">
-						</div>
-					</div>
-                    <div class="form-group">
-						<div class="btn-group btn-group-justified" role="group">
-							<div class="btn-group" role="group">
-								<button id="addNext" class="btn btn-primary btn-lg">Add Next</button>
-							</div>
-							<div class="btn-group" role="group">
-								<button id="addLast" class="btn btn-primary btn-lg">Add Last</button>
-							</div>
-						</div>
-					</div>
-				</form>
+            <div class="row">
+                <div class="youtube">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="input-group-lg">
+                                <input type="text" class="form-control" id="youtubeLink" placeholder="Youtube Video or Playlist">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="addNext" class="btn btn-primary btn-lg">Add Next</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="addLast" class="btn btn-primary btn-lg">Add Last</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="row">
+                <div class="local">
+                    <form class="form-horizontal">
+                        <div class="form-group">
+                            <div class="input-group-lg">
+                                <div class="dropdown">
+                                    <select class="form-control" id="localLink">
+                                        <option>Local video file</option>
+                                            {{#each files}}
+                                                <option>{{this}}</option>
+                                            {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="btn-group btn-group-justified" role="group">
+                                <div class="btn-group" role="group">
+                                    <button id="addNextLocal" class="btn btn-primary btn-lg">Add Next</button>
+                                </div>
+                                <div class="btn-group" role="group">
+                                    <button id="addLastLocal" class="btn btn-primary btn-lg">Add Last</button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
         <div class="col-md-6 col-md-offset-1 col-sm-6 col-sm-offset-1">

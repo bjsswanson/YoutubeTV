@@ -55,6 +55,24 @@ $(function() {
 			}
 		);
 
+		$('#addNextLocal').click(function (e) {
+					e.preventDefault();
+					var input = $('#localLink');
+					var link = input.val();
+					socket.emit("addNext", link);
+					input.val("");
+				}
+		);
+
+		$('#addLastLocal').click(function (e) {
+					e.preventDefault();
+					var input = $('#localLink');
+					var link = input.val();
+					socket.emit("addLast", link);
+					input.val("");
+				}
+		);
+
 		$('#removeAllConfirmed').click(function(e){
 			$('#confirmRemoveAll').modal('hide');
 			socket.emit("removeAll");

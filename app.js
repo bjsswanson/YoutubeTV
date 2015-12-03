@@ -21,7 +21,7 @@ app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-  res.render('index', { 'playing' : YoutubeTV.Playing });
+  res.render('index', { 'playing' : YoutubeTV.Playing, 'files' : YoutubeTV.Local.readFiles("/media") });
 });
 
 console.log('Listening on port ' + port);

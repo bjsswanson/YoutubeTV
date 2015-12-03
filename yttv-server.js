@@ -7,6 +7,7 @@ var endMinute = 30;
 
 var URLHelper = require('url');
 var QSHelper = require('qs');
+var fs = require('fs');
 
 var YoutubeTV = YoutubeTV || {};
 
@@ -18,9 +19,13 @@ YoutubeTV.Video = function(){
 		var omx = YoutubeTV.OMX;
 		YoutubeTV.Current = item;
 		emitPlaying(item);
-		omx.getYoutubeUrl(item.url, function ( youtubeUrl ) {
-			omx.start(youtubeUrl, next);
-		});
+        if(item.type == 'youtube') {
+            omx.getYoutubeUrl(item.url, function (youtubeUrl) {
+                omx.start(youtubeUrl, next);
+            });
+        } else {
+            omx.start(item.url, next);
+        }
 	};
 
 	function stop( callback ){
@@ -160,7 +165,9 @@ YoutubeTV.Video = function(){
 			createPlaylist(playlistId, callback);
 		} else if(videoId) {
 			createVideo(videoId, callback);
-		}
+		} else {
+            createLocalVideo(url, callback );
+        }
 	}
 
 	function createVideo( videoId, callback ){
@@ -172,7 +179,8 @@ YoutubeTV.Video = function(){
 				if(data != undefined && data.items.length > 0){
 					var item = data.items[0];
 					callback([{
-						url: 'https://www.youtube.com/watch?v=' + item.id,
+                        type: 'youtube',
+                        url: 'https://www.youtube.com/watch?v=' + item.id,
 						id: item.id,
 						title: item.snippet.title,
 						image: item.snippet.thumbnails.default
@@ -193,6 +201,7 @@ YoutubeTV.Video = function(){
 					var videos = [];
 					data.items.forEach(function(item){
 						videos.push({
+                            type: 'youtube',
 							url: 'https://www.youtube.com/watch?v=' + item.snippet.resourceId.videoId,
 							id: item.snippet.resourceId.videoId,
 							title: item.snippet.title,
@@ -205,6 +214,21 @@ YoutubeTV.Video = function(){
 			});
 		}
 	};
+
+    function createLocalVideo( url, callback ){
+        if(url != undefined){
+            var n = url.lastIndexOf('/');
+            var title = url.substring(n + 1);
+
+            callback([{
+                type: 'local',
+                url: url,
+                id: title,
+                title: title,
+                image: ''
+            }]);
+        }
+    };
 
 	function isFirstVideo(id){
 		return YoutubeTV.Playing.length > 0 && YoutubeTV.Playing[0].id === id;
@@ -272,6 +296,32 @@ YoutubeTV.Video = function(){
 	};
 
 	return expose;
+}();
+
+
+YoutubeTV.Local = function() {
+    var walk = function(dir) {
+        var results = []
+        var list = fs.readdirSync(dir)
+        list.forEach(function(file) {
+            file = dir + '/' + file
+            var stat = fs.statSync(file)
+            if (stat && stat.isDirectory()) {
+                results = results.concat(walk(file))
+            } else {
+                results.push(file);
+            }
+        })
+        return results
+    }
+
+    var expose = {
+        readFiles: function( path ){
+            return walk(path);
+        }
+    };
+
+    return expose;
 }();
 
 module.exports = YoutubeTV;
