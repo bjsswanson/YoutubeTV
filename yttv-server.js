@@ -219,11 +219,12 @@ YoutubeTV.Video = function(){
         if(url != undefined){
             var n = url.lastIndexOf('/');
             var title = url.substring(n + 1);
+            var id = title.replace(/\W/g, '');
 
             callback([{
                 type: 'local',
                 url: url,
-                id: title,
+                id: id,
                 title: title,
                 image: ''
             }]);
