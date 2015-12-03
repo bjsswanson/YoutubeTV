@@ -1,6 +1,6 @@
 var startDay = 1;
 var endDay = 5
-var startHour = 8;
+var startHour = 7;
 var startMinute = 0;
 var endHour = 16;
 var endMinute = 30;
