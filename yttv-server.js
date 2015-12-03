@@ -216,7 +216,7 @@ YoutubeTV.Video = function(){
 	};
 
     function createLocalVideo( url, callback ){
-        if(url != undefined){
+        if(url != undefined && url.length > 0){
             var n = url.lastIndexOf('/');
             var title = url.substring(n + 1);
             var id = title.replace(/\W/g, '');
