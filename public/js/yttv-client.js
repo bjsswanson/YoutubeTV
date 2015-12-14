@@ -73,6 +73,15 @@ $(function() {
 				}
 		);
 
+		$('#addAllLocal').click(function (e) {
+			e.preventDefault();
+			$("#localLink option").each(function(){
+				var link = $(this).val();
+				socket.emit("addLast", link);
+			});
+		});
+
+
 		$('#removeAllConfirmed').click(function(e){
 			$('#confirmRemoveAll').modal('hide');
 			socket.emit("removeAll");
