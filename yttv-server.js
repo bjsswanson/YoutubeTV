@@ -174,16 +174,17 @@ YoutubeTV.Video = function(){
 		if(videoId != undefined){
 			YoutubeTV.Youtube.videos.list({
 				id: videoId,
-				part: 'snippet'
+				part: 'snippet,contentDetails'
 			}, function(err, data, res){
 				if(data != undefined && data.items.length > 0){
 					var item = data.items[0];
-					callback([{
+                    callback([{
                         type: 'youtube',
                         url: 'https://www.youtube.com/watch?v=' + item.id,
 						id: item.id,
 						title: item.snippet.title,
-						image: item.snippet.thumbnails.default
+						image: item.snippet.thumbnails.default,
+                        duration: convertDuration(item.contentDetails.duration)
 					}]);
 				}
 			});
@@ -194,7 +195,7 @@ YoutubeTV.Video = function(){
 		if(playlistId != undefined){
 			YoutubeTV.Youtube.playlistItems.list({
 				playlistId: playlistId,
-				part: 'snippet',
+				part: 'snippet,contentDetails',
 				maxResults:  50
 			}, function(err, data, res){
 				if(data != undefined && data.items.length > 0){
@@ -205,7 +206,8 @@ YoutubeTV.Video = function(){
 							url: 'https://www.youtube.com/watch?v=' + item.snippet.resourceId.videoId,
 							id: item.snippet.resourceId.videoId,
 							title: item.snippet.title,
-							image: item.snippet.thumbnails != undefined ? item.snippet.thumbnails.default : { url : ""}
+							image: item.snippet.thumbnails != undefined ? item.snippet.thumbnails.default : { url : ""},
+                            duration: convertDuration(item.contentDetails.duration)
 						})
 					});
 
@@ -290,6 +292,42 @@ YoutubeTV.Video = function(){
 		return hours + ":" + minutes + ":" + seconds;
 	}
 
+    function convertDuration(duration) {
+        var a = duration.match(/\d+/g);
+
+        if (duration.indexOf('M') >= 0 && duration.indexOf('H') == -1 && duration.indexOf('S') == -1) {
+            a = [0, a[0], 0];
+        }
+
+        if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1) {
+            a = [a[0], 0, a[1]];
+        }
+        if (duration.indexOf('H') >= 0 && duration.indexOf('M') == -1 && duration.indexOf('S') == -1) {
+            a = [a[0], 0, 0];
+        }
+
+        duration = 0;
+
+        if (a.length == 3) {
+            duration = duration + parseInt(a[0]) * 3600;
+            duration = duration + parseInt(a[1]) * 60;
+            duration = duration + parseInt(a[2]);
+        }
+
+        if (a.length == 2) {
+            duration = duration + parseInt(a[0]) * 60;
+            duration = duration + parseInt(a[1]);
+        }
+
+        if (a.length == 1) {
+            duration = duration + parseInt(a[0]);
+        }
+        var h = Math.floor(duration / 3600);
+        var m = Math.floor(duration % 3600 / 60);
+        var s = Math.floor(duration % 3600 % 60);
+        return ((h > 0 ? h + ":" + (m < 10 ? "0" : "") : "") + m + ":" + (s < 10 ? "0" : "") + s);
+    }
+
 	var expose = {
 		init: function() {
 			initSockets();
@@ -302,19 +340,24 @@ YoutubeTV.Video = function(){
 
 YoutubeTV.Local = function() {
     var walk = function(dir) {
-        var results = []
-        var list = fs.readdirSync(dir)
-        list.forEach(function(file) {
-            if (!startsWith(file, ".")) {
-                file = dir + '/' + file
-                var stat = fs.statSync(file)
-                if (stat && stat.isDirectory()) {
-                    results = results.concat(walk(file))
-                } else {
-                    results.push(file);
+        var results = [];
+        try {
+            var list = fs.readdirSync(dir)
+            list.forEach(function(file) {
+                if (!startsWith(file, ".")) {
+                    file = dir + '/' + file
+                    var stat = fs.statSync(file)
+                    if (stat && stat.isDirectory()) {
+                        results = results.concat(walk(file))
+                    } else {
+                        results.push(file);
+                    }
                 }
-            }
-        });
+            });
+        } catch (err) {
+            console.log(err)
+        }
+
         return results
     }
 
