@@ -20,6 +20,9 @@ YoutubeTV.Video = function(){
         try {
             var file = fs.readFileSync(__dirname + '/videos.json').toString();
             YoutubeTV.Playing = JSON.parse(file);
+            if(YoutubeTV.Playing.length > 0) {
+                play(YoutubeTV.Playing[0]);
+            }
         } catch (err){
             console.log("No videos to load");
         }
