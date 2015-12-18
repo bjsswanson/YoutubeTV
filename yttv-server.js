@@ -15,6 +15,20 @@ YoutubeTV.Current = {};
 YoutubeTV.Playing = [];
 
 YoutubeTV.Video = function(){
+
+    function loadPlaying(){
+        try {
+            var file = fs.readFileSync(__dirname + '/videos.json').toString();
+            YoutubeTV.Playing = JSON.parse(file);
+        } catch (err){
+            console.log("No videos to load");
+        }
+    }
+
+    function savePlaying(){
+        fs.writeFile(__dirname + '/videos.json', JSON.stringify(YoutubeTV.Playing));
+    }
+
 	function play( item ) {
 		var omx = YoutubeTV.OMX;
 		YoutubeTV.Current = item;
@@ -94,6 +108,7 @@ YoutubeTV.Video = function(){
 				videos.forEach(function(video){
 					if(!isQueued(video.id)) {
 						playing.push(video);
+                        savePlaying();
 						emitAdding(playing.length - 1, video);
 					}
 				});
@@ -107,6 +122,7 @@ YoutubeTV.Video = function(){
 				videos.forEach(function(video) {
 					if (!isQueued(video.id)) {
 						playing.splice(index + 1, 0, video);
+                        savePlaying();
 						emitAdding(index + 1, video);
 						index++;
 					}
@@ -138,6 +154,7 @@ YoutubeTV.Video = function(){
 				if (isQueued(id)) {
 					var index = getIndex(id);
 					YoutubeTV.Playing.splice(index, 1);
+                    savePlaying();
 					io.sockets.emit('removingVideo', id);
 					if(YoutubeTV.Current && YoutubeTV.Current.id == id){
 						stop(function(){
@@ -152,6 +169,7 @@ YoutubeTV.Video = function(){
 
 		socket.on("removeAll", function(){
 			YoutubeTV.Playing.length = 0;
+            savePlaying();
 			stop(function(){
 				io.sockets.emit('removingAll');
 			});
@@ -219,17 +237,21 @@ YoutubeTV.Video = function(){
 
     function createLocalVideo( url, callback ){
         if(url != undefined && url.length > 0){
-            var n = url.lastIndexOf('/');
-            var title = url.substring(n + 1);
-            var id = title.replace(/\W/g, '');
+            fs.exists(url, function(exists) {
+                if (exists) {
+                    var n = url.lastIndexOf('/');
+                    var title = url.substring(n + 1);
+                    var id = title.replace(/\W/g, '');
 
-            callback([{
-                type: 'local',
-                url: url,
-                id: id,
-                title: title,
-                image: ''
-            }]);
+                    callback([{
+                        type: 'local',
+                        url: url,
+                        id: id,
+                        title: title,
+                        image: ''
+                    }]);
+                }
+            });
         }
     };
 
@@ -330,6 +352,7 @@ YoutubeTV.Video = function(){
 
 	var expose = {
 		init: function() {
+            loadPlaying();
 			initSockets();
 		}
 	};
