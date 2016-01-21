@@ -2,7 +2,7 @@ var startDay = 1;
 var endDay = 5
 var startHour = 7;
 var startMinute = 0;
-var endHour = 16;
+var endHour = 17;
 var endMinute = 30;
 
 var URLHelper = require('url');

@@ -4,7 +4,7 @@ var exec = child_process.exec;
 var OMX = function(){
 	function start( file, callback ) {
 		stop(function () {
-			var cmd = child_process.spawn("omxplayer", ["-o", "local", file]);
+			var cmd = child_process.spawn("omxplayer", ["-o", "hdmi", file]);
 			console.log("Playing:", file.substr(0, 80));
 			cmd.on('exit', function (code, signal) {
 				console.log("Exiting:", code, ",", signal);
