@@ -1,11 +1,19 @@
+var fs = require('fs');
 var child_process = require('child_process');
 var exec = child_process.exec;
 
 var OMX = function(){
 	function start( file, callback ) {
 		stop(function () {
-			var subtitles = file.substr(0, file.lastIndexOf('.')) + ".srt";
-			var cmd = child_process.spawn("omxplayer", ["-o", "hdmi", file, "--subtitles", subtitles]);
+            var args = ["-o", "hdmi", file]
+
+            var subtitles = subtitles(file);
+            if(subtitles){
+                args.push("--subtitles");
+                args.push(subtitles);
+            }
+
+            var cmd = child_process.spawn("omxplayer", args);
 			console.log("Playing:", file.substr(0, 80));
 			cmd.on('exit', function (code, signal) {
 				console.log("Exiting:", code, ",", signal);
@@ -16,6 +24,16 @@ var OMX = function(){
 			});
 		});
 	};
+
+    function subtitles( file ){
+        if(file.lastIndexOf("/", 0) === 0){
+            var path = file.substr(0, file.lastIndexOf('.')) + ".srt";
+            var exists = fs.existsSync(path);
+            if(exists){
+                return path;
+            }
+        }
+    }
 
 	function stop( callback ) {
 		exec('pkill -f omxplayer', callback);
