@@ -373,7 +373,7 @@ YoutubeTV.Local = function() {
         try {
             var list = fs.readdirSync(dir)
             list.forEach(function(file) {
-                if (!startsWith(file, ".") && endsWith(file, "srt")) {
+                if (!startsWith(file, ".") && !endsWith(file, "srt")) {
                     file = dir + '/' + file
                     var stat = fs.statSync(file)
                     if (stat && stat.isDirectory()) {

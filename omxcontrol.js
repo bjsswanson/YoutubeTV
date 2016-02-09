@@ -13,6 +13,8 @@ var OMX = function(){
                 args.push(subs);
             }
 
+            console.log("args: ", args);
+
             var cmd = child_process.spawn("omxplayer", args);
 			console.log("Playing:", file.substr(0, 80));
 			cmd.on('exit', function (code, signal) {
