@@ -4,7 +4,8 @@ var exec = child_process.exec;
 var OMX = function(){
 	function start( file, callback ) {
 		stop(function () {
-			var cmd = child_process.spawn("omxplayer", ["-o", "hdmi", file]);
+			var subtitles = file.substr(0, file.lastIndexOf('.')) + ".srt";
+			var cmd = child_process.spawn("omxplayer", ["-o", "hdmi", file, "--subtitles", subtitles]);
 			console.log("Playing:", file.substr(0, 80));
 			cmd.on('exit', function (code, signal) {
 				console.log("Exiting:", code, ",", signal);
