@@ -373,7 +373,7 @@ YoutubeTV.Local = function() {
         try {
             var list = fs.readdirSync(dir)
             list.forEach(function(file) {
-                if (!startsWith(file, ".")) {
+                if (!startsWith(file, ".") && endsWith(file, "srt")) {
                     file = dir + '/' + file
                     var stat = fs.statSync(file)
                     if (stat && stat.isDirectory()) {
@@ -392,6 +392,10 @@ YoutubeTV.Local = function() {
 
     function startsWith(str, prefix){
         return str.lastIndexOf(prefix, 0) === 0
+    }
+
+	function endsWith(str, suffix){
+        return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 
     var expose = {
