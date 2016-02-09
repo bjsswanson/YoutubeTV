@@ -7,10 +7,10 @@ var OMX = function(){
 		stop(function () {
             var args = ["-o", "hdmi", file]
 
-            var subtitles = subtitles(file);
-            if(subtitles){
+            var subs = subtitles(file);
+            if(subs){
                 args.push("--subtitles");
-                args.push(subtitles);
+                args.push(subs);
             }
 
             var cmd = child_process.spawn("omxplayer", args);
@@ -33,7 +33,7 @@ var OMX = function(){
                 return path;
             }
         }
-    }
+    };
 
 	function stop( callback ) {
 		exec('pkill -f omxplayer', callback);
@@ -56,6 +56,7 @@ var OMX = function(){
 	expose = {
 		start: start,
 		stop: stop,
+        subtitles: subtitles,
 		getYoutubeUrl: getYoutubeUrl
 	}
 
