@@ -8,6 +8,7 @@ var endMinute = 30;
 var URLHelper = require('url');
 var QSHelper = require('qs');
 var fs = require('fs');
+var diskspace = require('diskspace');
 
 var YoutubeTV = YoutubeTV || {};
 
@@ -368,16 +369,16 @@ YoutubeTV.Video = function(){
 
 
 YoutubeTV.Local = function() {
-    var walk = function(dir) {
+    var readFiles = function(dir) {
         var results = [];
         try {
             var list = fs.readdirSync(dir)
             list.forEach(function(file) {
-                if (!startsWith(file, ".") && !endsWith(file, "srt")) {
+                if (showFile(file)) {
                     file = dir + '/' + file
                     var stat = fs.statSync(file)
                     if (stat && stat.isDirectory()) {
-                        results = results.concat(walk(file))
+                        results = results.concat(readFiles(file))
                     } else {
                         results.push(file);
                     }
@@ -390,6 +391,12 @@ YoutubeTV.Local = function() {
         return results
     }
 
+	function showFile(file){
+		return !startsWith(file, ".")
+			&& !endsWith(file, "srt")
+			&& !contains(file, "partial")
+	}
+
     function startsWith(str, prefix){
         return str.lastIndexOf(prefix, 0) === 0
     }
@@ -398,10 +405,28 @@ YoutubeTV.Local = function() {
         return str.indexOf(suffix, str.length - suffix.length) !== -1;
     }
 
+	function contains(str, find){
+		return str.indexOf(find) !== -1;
+	}
+
+	function freeSpace( path ) {
+		diskspace.check(path, function (err, total, free, status) {
+			YoutubeTV.FreeSpace = humanReadableByteCount(free, true);
+		});
+	}
+
+	function humanReadableByteCount(bytes, si) {
+		var unit = si ? 1000 : 1024;
+		if (bytes < unit) return bytes + " B";
+		var exp = parseInt(Math.log(bytes) / Math.log(unit));
+		var pre = (si ? "kMGTPE" : "KMGTPE").charAt(exp-1) + (si ? "" : "i");
+		var b = bytes / Math.pow(unit, exp)
+		return Math.round(b) + " " + pre + "B"
+	}
+
     var expose = {
-        readFiles: function( path ){
-            return walk(path);
-        }
+        readFiles: readFiles,
+		freeSpace: freeSpace
     };
 
     return expose;

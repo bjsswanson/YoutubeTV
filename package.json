@@ -1,16 +1,17 @@
 {
-	"name": "YoutubeTV",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"start": "node app.js"
-	},
-	"dependencies": {
-		"express": "~4.8.7",
-		"debug": "~0.7.4",
-		"express-handlebars": "~1.0.1",
-		"socket.io": "~1.1.0",
-		"googleapis":"~1.1.3",
-		"qs": "~2.3.3"
-	}
+  "name": "YoutubeTV",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app.js"
+  },
+  "dependencies": {
+    "debug": "~0.7.4",
+    "diskspace": "^1.0.2",
+    "express": "~4.8.7",
+    "express-handlebars": "~1.0.1",
+    "googleapis": "~1.1.3",
+    "qs": "~2.3.3",
+    "socket.io": "~1.1.0"
+  }
 }

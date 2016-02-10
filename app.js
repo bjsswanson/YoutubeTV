@@ -13,6 +13,7 @@ YoutubeTV.IO = require('socket.io').listen(app.listen(port));
 YoutubeTV.OMX = require('./omxcontrol');
 YoutubeTV.Youtube = google.youtube('v3');
 YoutubeTV.Video.init();
+YoutubeTV.Local.freeSpace("/media");
 
 var expressHbs = require('express-handlebars');
 
@@ -21,7 +22,16 @@ app.set('view engine', 'hbs');
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
-  res.render('index', { 'playing' : YoutubeTV.Playing, 'files' : YoutubeTV.Local.readFiles("/media") });
+  res.render('index',
+	  {
+		  'playing' : YoutubeTV.Playing,
+		  'files' : YoutubeTV.Local.readFiles("/media"),
+		  'freeSpace': function(){
+			  YoutubeTV.Local.freeSpace("/media");
+			  return YoutubeTV.FreeSpace;
+		  }()
+	  }
+  );
 });
 
 console.log('Listening on port ' + port);
