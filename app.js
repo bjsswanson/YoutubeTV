@@ -13,7 +13,7 @@ YoutubeTV.IO = require('socket.io').listen(app.listen(port));
 YoutubeTV.OMX = require('./omxcontrol');
 YoutubeTV.Youtube = google.youtube('v3');
 YoutubeTV.Video.init();
-YoutubeTV.Local.freeSpace("/media");
+YoutubeTV.Local.freeSpace("/media/pi/MOVIES");
 
 var expressHbs = require('express-handlebars');
 
@@ -27,7 +27,7 @@ app.get('/', function(req, res){
 		  'playing' : YoutubeTV.Playing,
 		  'files' : YoutubeTV.Local.readFiles("/media"),
 		  'freeSpace': function(){
-			  YoutubeTV.Local.freeSpace("/media");
+			  YoutubeTV.Local.freeSpace("/media/pi/MOVIES");
 			  return YoutubeTV.FreeSpace;
 		  }()
 	  }
