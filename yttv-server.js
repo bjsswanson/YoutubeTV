@@ -411,8 +411,8 @@ YoutubeTV.Local = function() {
 
 	function freeSpace( path ) {
 		diskspace.check(path, function (err, total, free, status) {
-			var formattedSpace = humanReadableByteCount(free,true);
-			console.log(path, " : ", formattedSpace);
+			var formattedSpace = humanReadableByteCount(free, true);
+			console.log(path, " : ", formattedSpace, " : ", status);
 			YoutubeTV.FreeSpace = formattedSpace;
 		});
 	}
