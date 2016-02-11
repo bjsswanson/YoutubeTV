@@ -27,7 +27,7 @@ app.get('/', function(req, res){
 		  'playing' : YoutubeTV.Playing,
 		  'files' : YoutubeTV.Local.readFiles("/media"),
 		  'freeSpace': function(){
-			  YoutubeTV.Local.freeSpace("/dev/sda5");
+			  YoutubeTV.Local.freeSpace("/media/pi/MOVIES");
 			  return YoutubeTV.FreeSpace;
 		  }()
 	  }
