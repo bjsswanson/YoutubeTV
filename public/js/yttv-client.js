@@ -37,7 +37,7 @@ $(function() {
 	};
 
 	function buttons() {
-		$('#addNext').click(function (e) {
+		$('.addNextYoutube').click(function (e) {
 				e.preventDefault();
 				var input = $('#youtubeLink');
 				var link = input.val();
@@ -46,7 +46,7 @@ $(function() {
 			}
 		);
 
-		$('#addLast').click(function (e) {
+		$('.addLastYoutube').click(function (e) {
 				e.preventDefault();
 				var input = $('#youtubeLink');
 				var link = input.val();
@@ -55,32 +55,31 @@ $(function() {
 			}
 		);
 
-		$('#addNextLocal').click(function (e) {
-					e.preventDefault();
-					var input = $('#localLink');
-					var link = input.val();
-					socket.emit("addNext", link);
-					input.val("");
-				}
+		$('.addNextLocal').click(function (e) {
+				e.preventDefault();
+				var path = $(e.toElement).closest("[data-local-path]").data("local-path");
+				socket.emit("addNext", path);
+			}
 		);
 
-		$('#addLastLocal').click(function (e) {
-					e.preventDefault();
-					var input = $('#localLink');
-					var link = input.val();
-					socket.emit("addLast", link);
-					input.val("");
-				}
+		$('.addLastLocal').click(function (e) {
+				e.preventDefault();
+				var path = $(e.toElement).closest("[data-local-path]").data("local-path");
+				socket.emit("addLast", path);
+			}
 		);
 
-		$('#addAllLocal').click(function (e) {
-			e.preventDefault();
-			$("#localLink option").each(function(){
-				var link = $(this).val();
-				socket.emit("addLast", link);
-			});
-		});
-
+		$('.deleteLocal').click(function (e) {
+				e.preventDefault();
+				var path = $(e.toElement).closest("[data-local-path]").data("local-path");
+				var name = $(e.toElement).closest("[data-local-name]").data("local-name");
+				bootbox.confirm("Are you sure you want to delete: " + name + "?", function (result) {
+					if (result) {
+						socket.emit("deleteLocal", path);
+					}
+				});
+			}
+		);
 
 		$('#removeAllConfirmed').click(function(e){
 			$('#confirmRemoveAll').modal('hide');
@@ -112,6 +111,12 @@ $(function() {
 
 		socket.on('removingAll', function () {
 			$('#videos li').remove();
+		})
+
+		socket.on('deleteLocal', function (id) {
+			$('.localFile').filter(function(){
+				return $(this).data('local-path') === id
+			}).remove();
 		})
 	}
 

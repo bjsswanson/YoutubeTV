@@ -154,21 +154,7 @@ YoutubeTV.Video = function(){
 		})
 
 		socket.on("removeVideo", function( id ){
-			if(id != undefined && id.length > 0) {
-				if (isQueued(id)) {
-					var index = getIndex(id);
-					YoutubeTV.Playing.splice(index, 1);
-                    savePlaying();
-					io.sockets.emit('removingVideo', id);
-					if(YoutubeTV.Current && YoutubeTV.Current.id == id){
-						stop(function(){
-							if(YoutubeTV.Playing.length > 0){
-								next();
-							}
-						});
-					}
-				}
-			}
+			removeVideo(io, id);
 		});
 
 		socket.on("removeAll", function(){
@@ -178,7 +164,31 @@ YoutubeTV.Video = function(){
 				io.sockets.emit('removingAll');
 			});
 		});
+
+		socket.on("deleteLocal", function( id ){
+			removeVideo(io, id);
+			fs.unlinkSync(id);
+			io.sockets.emit("deleteLocal", id);
+		});
 	};
+
+	function removeVideo( io, id ){
+		if(id != undefined && id.length > 0) {
+			if (isQueued(id)) {
+				var index = getIndex(id);
+				YoutubeTV.Playing.splice(index, 1);
+				savePlaying();
+				io.sockets.emit('removingVideo', id);
+				if(YoutubeTV.Current && YoutubeTV.Current.id == id){
+					stop(function(){
+						if(YoutubeTV.Playing.length > 0){
+							next();
+						}
+					});
+				}
+			}
+		}
+	}
 
 	function addVideo( url, callback ){
 		var playlistId = getPlaylistId(url);
@@ -380,7 +390,7 @@ YoutubeTV.Local = function() {
                     if (stat && stat.isDirectory()) {
                         results = results.concat(readFiles(file))
                     } else {
-                        results.push(file);
+                        results.push({"name": substringAfterLast(file, "/"), "path" : file});
                     }
                 }
             });
@@ -407,6 +417,14 @@ YoutubeTV.Local = function() {
 
 	function contains(str, find){
 		return str.indexOf(find) !== -1;
+	}
+
+	function substringAfterLast(str, delim){
+		if(str.indexOf("/") != -1) {
+			return str.substring(str.lastIndexOf(delim) + 1);
+		} else {
+			return str;
+		}
 	}
 
 	function freeSpace( path ) {

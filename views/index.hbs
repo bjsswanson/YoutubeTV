@@ -34,10 +34,10 @@
                         <div class="form-group">
                             <div class="btn-group btn-group-justified" role="group">
                                 <div class="btn-group" role="group">
-                                    <button id="addNext" class="btn btn-primary btn-lg">Add Next</button>
+                                    <button class="btn btn-primary btn-lg addNextYoutube">Add Next</button>
                                 </div>
                                 <div class="btn-group" role="group">
-                                    <button id="addLast" class="btn btn-primary btn-lg">Add Last</button>
+                                    <button class="btn btn-primary btn-lg addLastYoutube">Add Last</button>
                                 </div>
                             </div>
                         </div>
@@ -46,32 +46,34 @@
             </div>
             <div class="row">
                 <div class="local">
-                    <form class="form-horizontal">
-                        <div class="form-group">
-                            <div class="input-group-lg">
-                                <div class="dropdown">
-                                    <select class="form-control" id="localLink">
-                                        {{#each files}}
-                                            <option>{{this}}</option>
-                                        {{/each}}
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="btn-group btn-group-justified" role="group">
-                                <div class="btn-group" role="group">
-                                    <button id="addNextLocal" class="btn btn-primary btn-lg">Add Next</button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button id="addLastLocal" class="btn btn-primary btn-lg">Add Last</button>
-                                </div>
-                                <div class="btn-group" role="group">
-                                    <button id="addAllLocal" class="btn btn-primary btn-lg">Add All</button>
-                                </div>
-                            </div>
-                        </div>
-                    </form>
+					<table class="table">
+						<thead>
+							<tr>
+								<th class="col-md-9">File</th>
+								<th class="col-md-3">Actions</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each files}}
+								<tr class="localFile" data-local-name="{{this.name}}" data-local-path="{{this.path}}">
+									<td>{{this.name}}</td>
+									<td>
+										<div class="btn-group btn-group-justified" role="group">
+											<a role="button" class="btn btn-default addNextLocal" title="Add next">
+												<span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+											</a>
+											<a role="button" class="btn btn-default addLastLocal" title="Add last">
+												<span class="glyphicon glyphicon-plus-sign" aria-hidden="true"></span>
+											</a>
+											<a role="button" class="btn btn-default deleteLocal" title="Delete">
+												<span class="glyphicon glyphicon-trash" aria-hidden="true"></span>
+											</a>
+										</div>
+									</td>
+								</tr>
+							{{/each}}
+						</tbody>
+					</table>
                 </div>
             </div>
         </div>
