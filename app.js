@@ -1,5 +1,6 @@
 var fs = require('fs')
 var express = require('express');
+var timeout = require('connect-timeout');
 var multer = require('multer');
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -12,15 +13,18 @@ var storage = multer.diskStorage({
 
 var upload = multer({ storage: storage })
 var app = express();
-
 var port = 7000;
+
+var server = app.listen(port);
+server.timeout = 0;
 
 var key = fs.readFileSync(__dirname + '/api.key').toString();
 var google = require('googleapis');
 google.options({ auth: key });
 
 var YoutubeTV = require('./yttv-server');
-YoutubeTV.IO = require('socket.io').listen(app.listen(port));
+
+YoutubeTV.IO = require('socket.io').listen(server);
 YoutubeTV.OMX = require('./omxcontrol');
 YoutubeTV.Youtube = google.youtube('v3');
 YoutubeTV.Video.init();
@@ -30,6 +34,7 @@ var expressHbs = require('express-handlebars');
 
 app.engine('hbs', expressHbs({extname:'hbs', defaultLayout:'main.hbs'}));
 app.set('view engine', 'hbs');
+app.use(timeout('0'));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
@@ -45,9 +50,6 @@ app.get('/', function(req, res){
   );
 });
 
-app.post('/upload', upload.single('file'), function (req, res, next) {
-	res.writeHead(200, { 'Content-Type': 'application/json' });
-	res.connection.setTimeout(0);
-})
+app.post('/upload', upload.single('file'), function (req, res, next) {})
 
 console.log('Listening on port ' + port);
