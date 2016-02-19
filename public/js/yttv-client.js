@@ -24,19 +24,22 @@ $(function() {
 	});
 
 	$(document).on('click', '#uploadButton', function() {
-		var button = $('uploadButton');
-		var input = $('#uploadFile');
-		var fd = new FormData();
-		fd.append( 'file', input[0].files[0] );
+		var button = $('#uploadButton');
+		if(!button.prop('disabled'))  {
+			button.prop('disabled', true);
+			var input = $('#uploadFile');
+			var fd = new FormData();
+			fd.append('file', input[0].files[0]);
 
-		$.ajax({
-			xhr: progress,
-			url: '/upload',
-			data: fd,
-			processData: false,
-			contentType: false,
-			type: 'POST'
-		});
+			$.ajax({
+				xhr: progress,
+				url: '/upload',
+				data: fd,
+				processData: false,
+				contentType: false,
+				type: 'POST'
+			});
+		}
 	});
 
 	$(document).on('click', '#videos .play', function(e) {
@@ -75,6 +78,7 @@ $(function() {
 	};
 
 	function progress() {
+		var button = $('#uploadButton');
 		var uploadProgress = $('#uploadProgress');
 		uploadProgress.removeClass("progress-bar-success");
 
@@ -90,6 +94,7 @@ $(function() {
 
 				if (percentComplete === 100) {
 					uploadProgress.addClass("progress-bar-success");
+					button.prop('disabled', false);
 				}
 
 			}
