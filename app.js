@@ -1,5 +1,16 @@
 var fs = require('fs')
 var express = require('express');
+var multer = require('multer');
+var storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, '/media/pi/UPLOAD')
+	},
+	filename: function (req, file, cb) {
+		cb(null, file.originalname)
+	}
+})
+
+var upload = multer({ storage: storage })
 var app = express();
 
 var port = 7000;
@@ -33,5 +44,9 @@ app.get('/', function(req, res){
 	  }
   );
 });
+
+app.post('/upload', upload.single('file'), function (req, res, next) {})
+
+
 
 console.log('Listening on port ' + port);

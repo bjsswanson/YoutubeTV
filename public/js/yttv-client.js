@@ -1,6 +1,43 @@
 var socket = io.connect();
 $(function() {
 
+	$(document).on('change', '.btn-file :file', function() {
+		var input = $(this),
+			numFiles = input.get(0).files ? input.get(0).files.length : 1,
+			label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+		input.trigger('fileselect', [numFiles, label]);
+	});
+
+	$(document).ready( function() {
+		$('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+
+			var input = $(this).parents('.input-group').find(':text'),
+				log = numFiles > 1 ? numFiles + ' files selected' : label;
+
+			if( input.length ) {
+				input.val(log);
+			} else {
+				if( log ) alert(log);
+			}
+
+		});
+	});
+
+	$(document).on('click', '#uploadButton', function() {
+		var input = $('#uploadFile');
+		var fd = new FormData();
+		fd.append( 'file', input[0].files[0] );
+
+		$.ajax({
+			xhr: progress,
+			url: '/upload',
+			data: fd,
+			processData: false,
+			contentType: false,
+			type: 'POST'
+		});
+	});
+
 	$(document).on('click', '#videos .play', function(e) {
 		var li = $(e.currentTarget).closest('li');
 		var id = li.attr('id');
@@ -35,6 +72,30 @@ $(function() {
 
 		return this;
 	};
+
+	function progress() {
+		var uploadProgress = $('#uploadProgress');
+		uploadProgress.removeClass("progress-bar-success");
+
+		var xhr = new window.XMLHttpRequest();
+		xhr.upload.addEventListener("progress", function(evt) {
+			if (evt.lengthComputable) {
+
+				var percentComplete = evt.loaded / evt.total;
+				percentComplete = parseInt(percentComplete * 100);
+
+				uploadProgress.text(percentComplete + "%");
+				uploadProgress.css("width", percentComplete + "%");
+
+				if (percentComplete === 100) {
+					uploadProgress.addClass("progress-bar-success");
+				}
+
+			}
+		}, false);
+
+		return xhr;
+	}
 
 	function buttons() {
 		$('.addNextYoutube').click(function (e) {
