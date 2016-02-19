@@ -24,6 +24,7 @@ $(function() {
 	});
 
 	$(document).on('click', '#uploadButton', function() {
+		var button = $('uploadButton');
 		var input = $('#uploadFile');
 		var fd = new FormData();
 		fd.append( 'file', input[0].files[0] );

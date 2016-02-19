@@ -45,8 +45,9 @@ app.get('/', function(req, res){
   );
 });
 
-app.post('/upload', upload.single('file'), function (req, res, next) {})
-
-
+app.post('/upload', upload.single('file'), function (req, res, next) {
+	res.writeHead(200, { 'Content-Type': 'application/json' });
+	res.connection.setTimeout(0);
+})
 
 console.log('Listening on port ' + port);
