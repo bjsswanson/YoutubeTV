@@ -27,6 +27,8 @@ $(function() {
 		var button = $('#uploadButton');
 		if(!button.prop('disabled'))  {
 			button.prop('disabled', true);
+			button.text('Uploading...')
+
 			var input = $('#uploadFile');
 			var fd = new FormData();
 			fd.append('file', input[0].files[0]);
@@ -95,6 +97,7 @@ $(function() {
 				if (percentComplete === 100) {
 					uploadProgress.addClass("progress-bar-success");
 					button.prop('disabled', false);
+					button.text('Upload');
 				}
 
 			}
