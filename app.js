@@ -1,6 +1,5 @@
 var fs = require('fs')
 var express = require('express');
-var timeout = require('connect-timeout');
 var multer = require('multer');
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
@@ -34,7 +33,6 @@ var expressHbs = require('express-handlebars');
 
 app.engine('hbs', expressHbs({extname:'hbs', defaultLayout:'main.hbs'}));
 app.set('view engine', 'hbs');
-app.use(timeout('0'));
 app.use(express.static(__dirname + '/public'));
 
 app.get('/', function(req, res){
