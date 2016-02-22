@@ -31,7 +31,10 @@ $(function() {
 
 			var input = $('#uploadFile');
 			var fd = new FormData();
-			fd.append('file', input[0].files[0]);
+
+			$.each(input[0].files, function(file) {
+				fd.append("file" + file, this);
+			})
 
 			$.ajax({
 				xhr: progress,

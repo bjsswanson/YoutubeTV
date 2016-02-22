@@ -3,7 +3,7 @@ var express = require('express');
 var multer = require('multer');
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, '/media/pi/UPLOAD')
+		cb(null, '/Users/swansonb/Downloads')
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname)
@@ -48,6 +48,6 @@ app.get('/', function(req, res){
   );
 });
 
-app.post('/upload', upload.single('file'), function (req, res, next) {})
+app.post('/upload', upload.any(), function (req, res, next) {})
 
 console.log('Listening on port ' + port);
