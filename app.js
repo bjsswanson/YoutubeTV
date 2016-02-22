@@ -1,9 +1,10 @@
+var USB_DRIVE = "/media/pi/MOVIES"
 var fs = require('fs')
 var express = require('express');
 var multer = require('multer');
 var storage = multer.diskStorage({
 	destination: function (req, file, cb) {
-		cb(null, '/media/pi/UPLOAD')
+		cb(null, USB_DRIVE + "/UPLOAD")
 	},
 	filename: function (req, file, cb) {
 		cb(null, file.originalname)
@@ -27,7 +28,7 @@ YoutubeTV.IO = require('socket.io').listen(server);
 YoutubeTV.OMX = require('./omxcontrol');
 YoutubeTV.Youtube = google.youtube('v3');
 YoutubeTV.Video.init();
-YoutubeTV.Local.freeSpace("/media/pi/MOVIES");
+YoutubeTV.Local.freeSpace(USB_DRIVE);
 
 var expressHbs = require('express-handlebars');
 
@@ -39,9 +40,9 @@ app.get('/', function(req, res){
   res.render('index',
 	  {
 		  'playing' : YoutubeTV.Playing,
-		  'files' : YoutubeTV.Local.readFiles("/media"),
+		  'files' : YoutubeTV.Local.readFiles(USB_DRIVE),
 		  'freeSpace': function(){
-			  YoutubeTV.Local.freeSpace("/media/pi/MOVIES");
+			  YoutubeTV.Local.freeSpace(USB_DRIVE);
 			  return YoutubeTV.FreeSpace;
 		  }()
 	  }
