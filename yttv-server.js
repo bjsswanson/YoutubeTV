@@ -169,17 +169,21 @@ YoutubeTV.Video = function(){
 			var omx = YoutubeTV.OMX;
 			var subtitles = omx.subtitles(id);
 
-			fs.exists(id, function(exists) {
-				if (exists) {
-					fs.unlinkSync(id);
-				}
-			});
+			if(id) {
+				fs.exists(id, function (exists) {
+					if (exists) {
+						fs.unlinkSync(id);
+					}
+				});
+			}
 
-			fs.exists(subtitles, function(exists) {
-				if (exists) {
-					fs.unlinkSync(subtitles);
-				}
-			});
+			if(subtitles) {
+				fs.exists(subtitles, function (exists) {
+					if (exists) {
+						fs.unlinkSync(subtitles);
+					}
+				});
+			}
 
 			removeVideo(io, id);
 			io.sockets.emit("deleteLocal", id);
