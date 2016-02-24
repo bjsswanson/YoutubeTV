@@ -58,6 +58,14 @@ var OMX = function(){
 		var tmp = fs.createWriteStream('temp.mp4');
 		var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
 		iplayer.stdout.pipe(tmp);
+		iplayer.on('exit', function (code, signal) {
+			iplayer.kill();
+			if (code == 0 && callback) {
+				callback();
+			}
+		});
+
+		omx.start("temp.mp4", function(){});
 	}
 
 	function stopIPlayer( callback ) {

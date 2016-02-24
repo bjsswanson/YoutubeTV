@@ -43,9 +43,6 @@ YoutubeTV.Video = function(){
             });
         } else if(item.type == 'iplayer'){
 			omx.streamIPlayer(item.url);
-			omx.start("temp.mp4", function(){
-				omx.stopIPlayer();
-			});
 		} else {
             omx.start(item.url, next);
         }
