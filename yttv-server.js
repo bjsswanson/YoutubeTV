@@ -41,7 +41,12 @@ YoutubeTV.Video = function(){
             omx.getYoutubeUrl(item.url, function (youtubeUrl) {
                 omx.start(youtubeUrl, next);
             });
-        } else {
+        } else if(item.type == 'iplayer'){
+			omx.streamIPlayer(item.url);
+			omx.start("temp.mp4", function(){
+				omx.stopIPlayer();
+			});
+		} else {
             omx.start(item.url, next);
         }
 	};
@@ -211,16 +216,37 @@ YoutubeTV.Video = function(){
 	function addVideo( url, callback ){
 		var playlistId = getPlaylistId(url);
 		var videoId = getVideoId(url);
-		if(playlistId){
-			createPlaylist(playlistId, callback);
+		if(isIPlayer(url)){
+			createIPlayerVideo(url, callback)
+		} else if(playlistId){
+			createYoutubePlaylist(playlistId, callback);
 		} else if(videoId) {
-			createVideo(videoId, callback);
+			createYoutubeVideo(videoId, callback);
 		} else {
             createLocalVideo(url, callback );
         }
 	}
+	function createIPlayerVideo( url, callback ){
+		if(url != undefined){
+			var idAndTitle = YoutubeTV.Utils.substringAfterLast(url, "episode/");
+			var split = idAndTitle.split("/");
 
-	function createVideo( videoId, callback ){
+			var id = split.length > 0 ? split[0] : url;
+			var title = split.length > 1 ? split[1] : url;
+
+			callback([{
+				type: 'iplayer',
+				url: url,
+				id: id,
+				title: title,
+			}]);
+
+		}
+	};
+
+
+
+	function createYoutubeVideo( videoId, callback ){
 		if(videoId != undefined){
 			YoutubeTV.Youtube.videos.list({
 				id: videoId,
@@ -241,7 +267,7 @@ YoutubeTV.Video = function(){
 		}
 	};
 
-	function createPlaylist( playlistId, callback ){
+	function createYoutubePlaylist( playlistId, callback ){
 		if(playlistId != undefined){
 			YoutubeTV.Youtube.playlistItems.list({
 				playlistId: playlistId,
@@ -317,6 +343,10 @@ YoutubeTV.Video = function(){
 		var query = url_parts.query;
 		var query_parts = QSHelper.parse(query);
 		return query_parts['list'];
+	}
+
+	function isIPlayer(url){
+		return url.indexOf("http://www.bbc.co.uk/iplayer") > -1;
 	}
 
 	function isPastStopTime(){
@@ -408,7 +438,7 @@ YoutubeTV.Local = function() {
                     if (stat && stat.isDirectory()) {
                         results = results.concat(readFiles(file))
                     } else {
-                        results.push({"name": substringAfterLast(file, "/"), "path" : file});
+                        results.push({"name": YoutubeTV.Utils.substringAfterLast(file, "/"), "path" : file});
                     }
                 }
             });
@@ -437,13 +467,7 @@ YoutubeTV.Local = function() {
 		return str.indexOf(find) !== -1;
 	}
 
-	function substringAfterLast(str, delim){
-		if(str.indexOf("/") != -1) {
-			return str.substring(str.lastIndexOf(delim) + 1);
-		} else {
-			return str;
-		}
-	}
+
 
 	function freeSpace( path ) {
 		diskspace.check(path, function (err, total, free, status) {
@@ -468,6 +492,22 @@ YoutubeTV.Local = function() {
     };
 
     return expose;
+}();
+
+YoutubeTV.Utils = function() {
+	function substringAfterLast(str, delim){
+		if(str.indexOf(delim) != -1) {
+			return str.substring(str.lastIndexOf(delim) + delim.length);
+		} else {
+			return str;
+		}
+	}
+
+	var expose = {
+		substringAfterLast: substringAfterLast
+	};
+
+	return expose;
 }();
 
 module.exports = YoutubeTV;

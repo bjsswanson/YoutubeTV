@@ -38,7 +38,7 @@ var OMX = function(){
     };
 
 	function stop( callback ) {
-		exec('pkill -f omxplayer', callback);
+		exec('pkill -f omxplayer' , callback);
 	};
 
 	function getYoutubeUrl(video, callback) {
@@ -54,12 +54,24 @@ var OMX = function(){
 		});
 	}
 
+	function streamIPlayer(url, callback){
+		var tmp = fs.createWriteStream('temp.mp4');
+		var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
+		iplayer.stdout.pipe(tmp);
+	}
+
+	function stopIPlayer( callback ) {
+		exec('pkill -f get_iplayer' , callback);
+	};
+
 	stop(); // Clean up omxplayer on start
 	expose = {
 		start: start,
 		stop: stop,
         subtitles: subtitles,
-		getYoutubeUrl: getYoutubeUrl
+		getYoutubeUrl: getYoutubeUrl,
+		streamIPlayer: streamIPlayer,
+		stopIPlayer: stopIPlayer
 	}
 
 	return expose;
