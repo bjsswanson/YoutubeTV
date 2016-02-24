@@ -8,7 +8,6 @@ var OMX = function(){
             var args = ["-o", "hdmi", file]
 
             var subs = subtitles(file);
-			console.log("File: ", file);
             if(subs){
                 args.push("--subtitles");
                 args.push(subs);
@@ -29,7 +28,7 @@ var OMX = function(){
 	};
 
     function subtitles( file ){
-        if(file.lastIndexOf("/", 0) === 0){
+        if(file.lastIndexOf("/", 0) === 0 || file === "temp.mp4"){
             var path = file.substr(0, file.lastIndexOf('.')) + ".srt";
             var exists = fs.existsSync(path);
             if(exists){
