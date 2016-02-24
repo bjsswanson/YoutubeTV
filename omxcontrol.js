@@ -55,16 +55,18 @@ var OMX = function(){
 	}
 
 	function streamIPlayer(url){
-		var video_pipe = fs.createWriteStream('temp.mp4');
-		var iplayer = child_process.spawn("get_iplayer", [url]);
-		iplayer.stdout.pipe(video_pipe);
+		stopIPlayer(function(){
+			var video_pipe = fs.createWriteStream('temp.mp4');
+			var iplayer = child_process.spawn("get_iplayer", [url]);
+			iplayer.stdout.pipe(video_pipe);
 
-		//var subtitle_pipe = fs.createWriteStream('temp.srt');
-		//var subtitles = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--nowrite", "--stream"]);
-		//subtitles.stdout.pipe(subtitle_pipe);
+			//var subtitle_pipe = fs.createWriteStream('temp.srt');
+			//var subtitles = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--nowrite", "--stream"]);
+			//subtitles.stdout.pipe(subtitle_pipe);
 
-		start("temp.mp4", function(){
-			stopIPlayer();
+			start("temp.mp4", function(){
+				stopIPlayer();
+			});
 		});
 	}
 
