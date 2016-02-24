@@ -65,7 +65,7 @@ var OMX = function(){
 			}
 		});
 
-		omx.start("temp.mp4", function(){});
+		start("temp.mp4", function(){});
 	}
 
 	function stopIPlayer( callback ) {
