@@ -60,9 +60,9 @@ var OMX = function(){
 			var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
 			iplayer.stdout.pipe(video_pipe);
 
-			//var subtitle_pipe = fs.createWriteStream('temp.srt');
-			//var subtitles = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--nowrite", "--stream"]);
-			//subtitles.stdout.pipe(subtitle_pipe);
+			iplayer.stdout.on('end', function() {
+				iplayer.kill();
+			});
 
 			start("temp.mp4", function(){
 				stopIPlayer();
