@@ -37,10 +37,6 @@ var OMX = function(){
         }
     };
 
-	function stop( callback ) {
-		exec('pkill -f omxplayer' , callback);
-	};
-
 	function getYoutubeUrl(video, callback) {
 		var yt = child_process.spawn("youtube-dl", ["-f", "38/37/46/22/35/34/18/6/5/17/13", "-g", video]);
 		var url = "";
@@ -54,7 +50,7 @@ var OMX = function(){
 		});
 	}
 
-	function streamIPlayer(url){
+	function streamIPlayer(url, callback){
 		stopIPlayer(function(){
 			var video_pipe = fs.createWriteStream('temp.mp4');
 			var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
@@ -62,28 +58,21 @@ var OMX = function(){
 
 			video_pipe.on('pipe', function(){
 				console.log('Piping Video.');
-				start('temp.mp4');
-			});
-
-			iplayer.on('exit', function (code, signal) {
-				console.log("iPlayer Exit");
-				stopAll();
+				start('temp.mp4', stopIPlayer(callback));
 			});
 
 			iplayer.stdout.pipe(video_pipe)
-				.on('error', function(){ console.log("iPlayer Error"); stopAll()})
-				.on('end', function(){ console.log("iPlayer End"); stopAll()});
+				.on('error', function(){ console.log("iPlayer Error"); stopIPlayer(callback)})
+				.on('end', function(){ console.log("iPlayer End"); stopIPlayer(callback)});
 		});
 	}
 
-	function stopAll() {
-		console.log("Stopping All.");
-		stop();
-		stopIPlayer();
+	function stopIPlayer(callback) {
+		exec('pkill -f get_iplayer' , callback);
 	}
 
-	function stopIPlayer( callback ) {
-		exec('pkill -f get_iplayer' , callback);
+	function stop( callback ) {
+		exec('pkill -f omxplayer' , callback);
 	};
 
 	stop(); // Clean up omxplayer on start
