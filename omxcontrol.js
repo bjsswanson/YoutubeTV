@@ -61,7 +61,7 @@ var OMX = function(){
 			console.log("Spawning iPlayer");
 			iplayer.stdout.pipe(video_pipe)
 				.on('error', function(){ console.log("iPlayer Error"); stopAll()})
-				.on('end', function(){ console.log("iPlayer End"); stopAll());
+				.on('end', function(){ console.log("iPlayer End"); stopAll()});
 
 			iplayer.on('exit', function (code, signal) {
 				console.log("iPlayer Exit");
