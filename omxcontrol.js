@@ -54,7 +54,7 @@ var OMX = function(){
 		});
 	}
 
-	function streamIPlayer(url, callback){
+	function streamIPlayer(url){
 		var video_pipe = fs.createWriteStream('temp.mp4');
 		var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
 		iplayer.stdout.pipe(video_pipe);
@@ -62,13 +62,6 @@ var OMX = function(){
 		var subtitle_pipe = fs.createWriteStream('temp.srt');
 		var subtitles = child_process.spawn("get_iplayer", [url, "--subtitles-only"]);
 		subtitles.stdout.pipe(subtitle_pipe);
-
-		iplayer.on('exit', function (code, signal) {
-			iplayer.kill();
-			if (code == 0 && callback) {
-				callback();
-			}
-		});
 
 		start("temp.mp4", function(){
 			stopIPlayer();
