@@ -58,7 +58,7 @@ var OMX = function(){
 
 			video_pipe.on('pipe', function(){
 				console.log('Piping Video.');
-				start('temp.mp4', stopIPlayer(callback));
+				start('temp.mp4', function(){ stopIPlayer(callback); });
 			});
 
 			iplayer.stdout.pipe(video_pipe)
