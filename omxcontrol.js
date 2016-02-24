@@ -65,7 +65,6 @@ var OMX = function(){
 
 			iplayer.on('exit', function (code, signal) {
 				console.log("iPlayer Exit");
-			}
 				stopAll();
 			});
 
