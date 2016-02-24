@@ -236,6 +236,7 @@ YoutubeTV.Video = function(){
 				url: url,
 				id: id,
 				title: title,
+				image: "/public/images/iPlayer.png"
 			}]);
 
 		}
