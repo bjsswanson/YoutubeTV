@@ -8,7 +8,7 @@ var OMX = function(){
             var args = ["-o", "hdmi", file]
 
             var subs = subtitles(file);
-			console.log("Subtitles: ", subs);
+			console.log("File: ", file);
             if(subs){
                 args.push("--subtitles");
                 args.push(subs);
