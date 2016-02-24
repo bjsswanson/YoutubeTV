@@ -464,8 +464,6 @@ YoutubeTV.Local = function() {
 		return str.indexOf(find) !== -1;
 	}
 
-
-
 	function freeSpace( path ) {
 		diskspace.check(path, function (err, total, free, status) {
 			var formattedSpace = humanReadableByteCount(free, false);
