@@ -57,7 +57,7 @@ var OMX = function(){
 	function streamIPlayer(url){
 		stopIPlayer(function(){
 			var video_pipe = fs.createWriteStream('temp.mp4');
-			var iplayer = child_process.spawn("get_iplayer", [url]);
+			var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
 			iplayer.stdout.pipe(video_pipe);
 
 			//var subtitle_pipe = fs.createWriteStream('temp.srt');
