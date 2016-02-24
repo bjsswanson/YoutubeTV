@@ -56,19 +56,24 @@ var OMX = function(){
 
 	function streamIPlayer(url){
 		stopIPlayer(function(){
+			var started = false;
 			var video_pipe = fs.createWriteStream('temp.mp4');
 			var iplayer = child_process.spawn("get_iplayer", [url, "--nowrite", "--stream"]);
-			iplayer.stdout.pipe(video_pipe).on('error', handleError);
-
-			start("temp.mp4", function(){
-				stopIPlayer();
-			});
+			iplayer.stdout.pipe(video_pipe, { end: false })
+				.on('readable', function(){
+					if(!started){
+						started = true;
+						start("temp.mp4", function(){
+							stopIPlayer();
+						});
+					}
+				})
+				.on('error', handleError)
+				.on('end', function(){ stop(); });
 
 			iplayer.on('exit', function (code, signal) {
-				console.log("iPlayer closed:", code, ",", signal);
-				iplayer.kill();
 				stop();
-			})
+			});
 		});
 	}
 
