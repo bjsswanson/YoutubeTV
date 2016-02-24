@@ -63,6 +63,12 @@ var OMX = function(){
 			start("temp.mp4", function(){
 				stopIPlayer();
 			});
+
+			iplayer.on('exit', function (code, signal) {
+				console.log("iPlayer closed:", code, ",", signal);
+				iplayer.kill();
+				stop();
+			})
 		});
 	}
 
