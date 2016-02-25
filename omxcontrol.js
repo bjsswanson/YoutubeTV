@@ -54,9 +54,13 @@ var OMX = function(){
 		stopIPlayer(function(){
 			var iplayer = child_process.spawn("get_iplayer", [url, "--output", "temp"]);
 
-			iplayer.stdout.setEncoding('utf8');
 			iplayer.stdout
-				.on("readable", function(){ console.log(iplayer.stdout.read()); })
+				.on("readable", function(){
+					var chunk;
+					while (null !== (chunk = player.stdout.read())) {
+						console.log(chunk.toString());
+					}
+				})
 				.on('error', function(){ console.log("iPlayer Error"); stopIPlayer(callback)})
 		});
 	}
