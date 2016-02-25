@@ -55,7 +55,7 @@ var OMX = function(){
 			var iplayer = child_process.spawn("get_iplayer", [url, "--ouput", "temp"]);
 
 			iplayer.stdout
-				.on("readable", function(){ console.log(iplayer.read()); })
+				.on("readable", function(){ console.log(iplayer.stdout.read()); })
 				.on('error', function(){ console.log("iPlayer Error"); stopIPlayer(callback)})
 		});
 	}
