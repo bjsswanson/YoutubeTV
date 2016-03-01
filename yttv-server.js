@@ -459,7 +459,6 @@ YoutubeTV.Local = function() {
 	function showFile(file){
 		return !YoutubeTV.Utils.startsWith(file, ".")
 			&& !YoutubeTV.Utils.endsWith(file, "srt")
-			&& !YoutubeTV.Utils.contains(file, "partial")
 	}
 
 	function freeSpace( path ) {
