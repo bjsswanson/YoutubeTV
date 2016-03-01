@@ -28,6 +28,7 @@ var OMX = function(){
 				});
 			});
 		} else {
+			console.log("Waiting for video. Trying again in 1 second.")
 			setTimeout(callback, 1000);
 		}
 	};
