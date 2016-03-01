@@ -32,7 +32,8 @@ var OMX = function(){
     function subtitles( file ){
         if(file && file.lastIndexOf("/", 0) === 0){
             var path = file.substr(0, file.lastIndexOf('.')) + ".srt";
-            var exists = fs.existsSync(path);
+			var path2 = file.substr(0, file.indexOf('.')) + ".srt";
+            var exists = fs.existsSync(path) || fs.existsSync(path2);
             if(exists){
                 return path;
             }
