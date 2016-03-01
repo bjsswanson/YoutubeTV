@@ -40,7 +40,7 @@ app.get('/', function(req, res){
   res.render('index',
 	  {
 		  'playing' : YoutubeTV.Playing,
-		  'files' : YoutubeTV.Local.readFiles(USB_DRIVE),
+		  'files' : YoutubeTV.Local.readFiles(USB_DRIVE + "/UPLOAD"),
 		  'freeSpace': function(){
 			  YoutubeTV.Local.freeSpace(USB_DRIVE);
 			  return YoutubeTV.FreeSpace;

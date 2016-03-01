@@ -51,46 +51,34 @@ var OMX = function(){
 		});
 	}
 
-	function streamIPlayer(url, id, callback){
+	function streamIPlayer(id, callback){
 		findIPlayerFile(id, function(iPlayerFile){
-			if (iPlayerFile) {
-				start(iPlayerFile, callback);
-			} else {
-				var iplayer = child_process.spawn("get_iplayer", [url, "--output", "temp"]);
-
-				iplayer.stdout.on("readable", function(){
-					var chunk;
-					while (null !== (chunk = iplayer.stdout.read())) {
-						var message = chunk.toString();
-						console.log(message);
-						//if(YoutubeTV.Utils.contains(message, "File name prefix")){
-						//	findIPlayerFile(url, function(partialFile){
-						//		console.log("Starting iPlayer Video: ", partialFile);
-						//		start(partialFile, callback);
-						//	});
-						//}
-					}
-				});
-			}
+			start(iPlayerFile, callback);
 		})
 	}
 
-	function findIPlayerFile(id, callback){
-		fs.mkdir("temp", function (){
-			fs.readdir("temp", function (err, files) {
-				var iPlayerFile;
-				if (files) {
-					files.forEach(function (element) {
-						if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "mp4")) {
-							iPlayerFile = element;
-						}
-					});
-				}
-				callback(iPlayerFile);
-			});
+	function findIPlayerFile(id, callback) {
+		fs.readdir("/media/pi/MOVIES/IPLAYER", function (err, files) {
+			var iPlayerFile;
+			if (files) {
+				files.forEach(function (element) {
+					if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "mp4")) {
+						iPlayerFile = element;
+					}
+				});
+			}
+			callback(iPlayerFile);
 		});
 	}
 
+	function downloadIPlayer(url){
+		findIPlayerFile(id, function(iPlayerFile){
+			if(!iPlayerFile){
+				child_process.spawn("get_iplayer", [url, "--output", "/media/pi/MOVIES/IPLAYER"]);
+				child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", "/media/pi/MOVIES/IPLAYER"]);
+			}
+		})
+	}
 
 	function stopIPlayer(callback) {
 		exec('pkill -f get_iplayer' , callback);
@@ -107,6 +95,7 @@ var OMX = function(){
         subtitles: subtitles,
 		getYoutubeUrl: getYoutubeUrl,
 		streamIPlayer: streamIPlayer,
+		downloadIPlayer: downloadIPlayer,
 		stopIPlayer: stopIPlayer
 	}
 

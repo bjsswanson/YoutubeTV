@@ -115,6 +115,7 @@ YoutubeTV.Video = function(){
 					if(!isQueued(video.id)) {
 						playing.push(video);
                         savePlaying();
+						downloadIPlayer(video);
 						emitAdding(playing.length - 1, video);
 					}
 				});
@@ -129,6 +130,7 @@ YoutubeTV.Video = function(){
 					if (!isQueued(video.id)) {
 						playing.splice(index + 1, 0, video);
                         savePlaying();
+						downloadIPlayer(video);
 						emitAdding(index + 1, video);
 						index++;
 					}
@@ -191,6 +193,13 @@ YoutubeTV.Video = function(){
 			io.sockets.emit("deleteLocal", id);
 		});
 	};
+
+	function downloadIPlayer(video){
+		var omx = YoutubeTV.OMX;
+		if(video.type === 'iplayer'){
+			omx.downloadIPlayer(video.url);
+		}
+	}
 
 	function removeVideo( io, id ){
 		if(id != undefined && id.length > 0) {
