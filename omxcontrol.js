@@ -51,7 +51,7 @@ var OMX = function(){
 	}
 
 	function streamIPlayer(url, id, callback){
-		findIPlayerFile(url, id, function(iPlayerFile){
+		findIPlayerFile(id, function(iPlayerFile){
 			if (iPlayerFile) {
 				start(iPlayerFile, callback);
 			} else {
@@ -60,14 +60,20 @@ var OMX = function(){
 				iplayer.stdout.on("readable", function(){
 					var chunk;
 					while (null !== (chunk = iplayer.stdout.read())) {
-						console.log("Chunk: ", chunk.toString());
+						var message = chunk.toString();
+						if(YoutubeTV.Utils.contains(message, "File name prefix")){
+							findIPlayerFile(url, function(partialFile){
+								console.log("Starting iPlayer Video: ", partialFile);
+								start(partialFile, callback);
+							});
+						}
 					}
 				});
 			}
 		})
 	}
 
-	function findIPlayerFile(url, id, callback){
+	function findIPlayerFile(id, callback){
 		fs.mkdir("temp", function (){
 			fs.readdir("temp", function (err, files) {
 				var iPlayerFile;
