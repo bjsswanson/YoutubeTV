@@ -42,7 +42,7 @@ YoutubeTV.Video = function(){
                 omx.start(youtubeUrl, next);
             });
         } else if(item.type == 'iplayer'){
-			omx.streamIPlayer(item.url, next);
+			omx.streamIPlayer(item.url, item.id, next);
 		} else {
             omx.start(item.url, next);
         }
@@ -448,21 +448,9 @@ YoutubeTV.Local = function() {
     }
 
 	function showFile(file){
-		return !startsWith(file, ".")
-			&& !endsWith(file, "srt")
-			&& !contains(file, "partial")
-	}
-
-    function startsWith(str, prefix){
-        return str.lastIndexOf(prefix, 0) === 0
-    }
-
-	function endsWith(str, suffix){
-        return str.indexOf(suffix, str.length - suffix.length) !== -1;
-    }
-
-	function contains(str, find){
-		return str.indexOf(find) !== -1;
+		return !YoutubeTV.Utils.startsWith(file, ".")
+			&& !YoutubeTV.Utils.endsWith(file, "srt")
+			&& !YoutubeTV.Utils.contains(file, "partial")
 	}
 
 	function freeSpace( path ) {
@@ -499,8 +487,23 @@ YoutubeTV.Utils = function() {
 		}
 	}
 
+	function startsWith(str, prefix){
+		return str.lastIndexOf(prefix, 0) === 0
+	}
+
+	function endsWith(str, suffix){
+		return str.indexOf(suffix, str.length - suffix.length) !== -1;
+	}
+
+	function contains(str, find){
+		return str.indexOf(find) !== -1;
+	}
+
 	var expose = {
-		substringAfterLast: substringAfterLast
+		substringAfterLast: substringAfterLast,
+		startsWith: startsWith,
+		endsWith: endsWith,
+		contains: contains
 	};
 
 	return expose;

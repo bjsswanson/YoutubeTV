@@ -50,28 +50,38 @@ var OMX = function(){
 		});
 	}
 
-	function streamIPlayer(url, callback){
-			fs.readdir("temp", function(err, files){
-				if(files){
-					files.forEach(function(element, index, array){
-						console.log(element);
-					});
-				}
-			});
+	function streamIPlayer(url, id, callback){
+		findIPlayerFile(url, id, function(iPlayerFile){
+			if (iPlayerFile) {
+				start(iPlayerFile, callback);
+			} else {
+				var iplayer = child_process.spawn("get_iplayer", [url, "--output", "temp"]);
 
-			//var iplayer = child_process.spawn("get_iplayer", [url, "--output", "temp"]);
-			//
-			//iplayer.stdout
-			//	.on("readable", function(){
-			//		var chunk;
-			//		while (null !== (chunk = iplayer.stdout.read())) {
-			//			console.log(chunk.toString());
-			//		}
-			//	})
-			//	.on('error', function(){ console.log("iPlayer Error"); stopIPlayer(callback)})
-
+				iplayer.stdout.on("readable", function(){
+					var chunk;
+					while (null !== (chunk = iplayer.stdout.read())) {
+						console.log("Chunk: ", chunk);
+					}
+				});
+			}
+		})
 	}
 
+	function findIPlayerFile(url, id, callback){
+		fs.mkdir("temp", function (){
+			fs.readdir("temp", function (err, files) {
+				var iPlayerFile;
+				if (files) {
+					files.forEach(function (element) {
+						if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "mp4")) {
+							iPlayerFile = element;
+						}
+					});
+				}
+				callback(iPlayerFile);
+			});
+		});
+	}
 
 
 	function stopIPlayer(callback) {
