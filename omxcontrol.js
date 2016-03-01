@@ -28,7 +28,7 @@ var OMX = function(){
 				});
 			});
 		} else {
-			callback();
+			setTimeout(callback, 1000);
 		}
 	};
 
@@ -68,7 +68,6 @@ var OMX = function(){
 			var iPlayerFile;
 			if (files) {
 				files.forEach(function (element) {
-					console.log("Element: ", element, " : ", id);
 					if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "flv")) {
 						iPlayerFile = path + "/" + element;
 					}
