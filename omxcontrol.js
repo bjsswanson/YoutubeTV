@@ -59,13 +59,14 @@ var OMX = function(){
 	}
 
 	function findIPlayerFile(id, callback) {
-		fs.readdir("/media/pi/MOVIES/IPLAYER", function (err, files) {
+		var path = "/media/pi/MOVIES/IPLAYER";
+		fs.readdir(path, function (err, files) {
 			var iPlayerFile;
 			if (files) {
 				files.forEach(function (element) {
 					console.log("Element: ", element, " : ", id);
 					if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "flv")) {
-						iPlayerFile = element;
+						iPlayerFile = path + "/" + element;
 					}
 				});
 			}
