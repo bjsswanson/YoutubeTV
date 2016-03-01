@@ -197,7 +197,7 @@ YoutubeTV.Video = function(){
 	function downloadIPlayer(video){
 		var omx = YoutubeTV.OMX;
 		if(video.type === 'iplayer'){
-			omx.downloadIPlayer(video.url);
+			omx.downloadIPlayer(video.url, video.id);
 		}
 	}
 
