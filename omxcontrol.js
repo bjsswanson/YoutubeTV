@@ -33,10 +33,10 @@ var OMX = function(){
         if(file && file.lastIndexOf("/", 0) === 0){
             var path = file.substr(0, file.lastIndexOf('.')) + ".srt";
 			var path2 = file.substr(0, file.indexOf('.')) + ".srt";
-            var exists = fs.existsSync(path) || fs.existsSync(path2);
-            if(exists){
-                return path;
-            }
+            var exists = fs.existsSync(path);
+			var exists2 = fs.existsSync(path2);
+            if(exists){ return path; }
+			if(exists2){ return path2; }
         }
     };
 
