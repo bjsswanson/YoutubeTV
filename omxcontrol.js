@@ -80,8 +80,8 @@ var OMX = function(){
 	function downloadIPlayer(url, id){
 		findIPlayerFile(id, function(iPlayerFile){
 			if(!iPlayerFile){
-				child_process.spawn("get_iplayer", [url, "--output", "/media/pi/MOVIES/IPLAYER"]);
-				child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", "/media/pi/MOVIES/IPLAYER"]);
+				child_process.spawn("get_iplayer", [url, "--output", "/media/pi/MOVIES/IPLAYER"], { stdio: 'inherit' });
+				child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", "/media/pi/MOVIES/IPLAYER"], { stdio: 'inherit' });
 			}
 		})
 	}
