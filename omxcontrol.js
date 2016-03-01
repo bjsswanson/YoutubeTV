@@ -1,3 +1,4 @@
+var YoutubeTV = require('./yttv-server');
 var fs = require('fs');
 var child_process = require('child_process');
 var exec = child_process.exec;
