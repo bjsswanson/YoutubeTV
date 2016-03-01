@@ -5,28 +5,31 @@ var exec = child_process.exec;
 
 var OMX = function(){
 	function start( file, callback ) {
-		file = file || "";
-		stop(function () {
-            var args = ["-o", "hdmi", file]
+		if(file) {
+			stop(function () {
+				var args = ["-o", "hdmi", file]
 
-            var subs = subtitles(file);
-            if(subs){
-                args.push("--subtitles");
-                args.push(subs);
-            }
-
-            console.log("args: ", args);
-
-            var cmd = child_process.spawn("omxplayer", args);
-			console.log("Playing:", file.substr(0, 80));
-			cmd.on('exit', function (code, signal) {
-				console.log("Exiting:", code, ",", signal);
-				cmd.kill();
-				if (code == 0 && callback) {
-					callback();
+				var subs = subtitles(file);
+				if (subs) {
+					args.push("--subtitles");
+					args.push(subs);
 				}
+
+				console.log("args: ", args);
+
+				var cmd = child_process.spawn("omxplayer", args);
+				console.log("Playing:", file.substr(0, 80));
+				cmd.on('exit', function (code, signal) {
+					console.log("Exiting:", code, ",", signal);
+					cmd.kill();
+					if (code == 0 && callback) {
+						callback();
+					}
+				});
 			});
-		});
+		} else {
+			callback();
+		}
 	};
 
     function subtitles( file ){
