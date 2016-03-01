@@ -29,7 +29,7 @@ var OMX = function(){
 	};
 
     function subtitles( file ){
-        if(file.lastIndexOf("/", 0) === 0 || file === "temp.mp4"){
+        if(file && file.lastIndexOf("/", 0) === 0){
             var path = file.substr(0, file.lastIndexOf('.')) + ".srt";
             var exists = fs.existsSync(path);
             if(exists){
@@ -62,12 +62,13 @@ var OMX = function(){
 					var chunk;
 					while (null !== (chunk = iplayer.stdout.read())) {
 						var message = chunk.toString();
-						if(YoutubeTV.Utils.contains(message, "File name prefix")){
-							findIPlayerFile(url, function(partialFile){
-								console.log("Starting iPlayer Video: ", partialFile);
-								start(partialFile, callback);
-							});
-						}
+						console.log(message);
+						//if(YoutubeTV.Utils.contains(message, "File name prefix")){
+						//	findIPlayerFile(url, function(partialFile){
+						//		console.log("Starting iPlayer Video: ", partialFile);
+						//		start(partialFile, callback);
+						//	});
+						//}
 					}
 				});
 			}
