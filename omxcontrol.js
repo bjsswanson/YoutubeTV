@@ -5,6 +5,7 @@ var exec = child_process.exec;
 
 var OMX = function(){
 	function start( file, callback ) {
+		file = file || "";
 		stop(function () {
             var args = ["-o", "hdmi", file]
 
