@@ -60,7 +60,7 @@ var OMX = function(){
 				iplayer.stdout.on("readable", function(){
 					var chunk;
 					while (null !== (chunk = iplayer.stdout.read())) {
-						console.log("Chunk: ", chunk);
+						console.log("Chunk: ", chunk.toString());
 					}
 				});
 			}
