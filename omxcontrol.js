@@ -63,6 +63,7 @@ var OMX = function(){
 			var iPlayerFile;
 			if (files) {
 				files.forEach(function (element) {
+					console.log("Element: ", element, " : ", id);
 					if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "mp4")) {
 						iPlayerFile = element;
 					}
