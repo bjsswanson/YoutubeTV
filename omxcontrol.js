@@ -51,19 +51,28 @@ var OMX = function(){
 	}
 
 	function streamIPlayer(url, callback){
-		stopIPlayer(function(){
-			var iplayer = child_process.spawn("get_iplayer", [url, "--output", "temp"]);
+			fs.readdir("temp", function(err, files){
+				if(files){
+					files.forEach(function(element, index, array){
+						console.log(element);
+					});
+				}
+			});
 
-			iplayer.stdout
-				.on("readable", function(){
-					var chunk;
-					while (null !== (chunk = iplayer.stdout.read())) {
-						console.log(chunk.toString());
-					}
-				})
-				.on('error', function(){ console.log("iPlayer Error"); stopIPlayer(callback)})
-		});
+			//var iplayer = child_process.spawn("get_iplayer", [url, "--output", "temp"]);
+			//
+			//iplayer.stdout
+			//	.on("readable", function(){
+			//		var chunk;
+			//		while (null !== (chunk = iplayer.stdout.read())) {
+			//			console.log(chunk.toString());
+			//		}
+			//	})
+			//	.on('error', function(){ console.log("iPlayer Error"); stopIPlayer(callback)})
+
 	}
+
+
 
 	function stopIPlayer(callback) {
 		exec('pkill -f get_iplayer' , callback);
