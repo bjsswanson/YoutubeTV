@@ -12,7 +12,8 @@ YoutubeTV.Playing = [];
 YoutubeTV.Youtube = google.youtube('v3');
 YoutubeTV.Video = require('./video');
 YoutubeTV.Local = require('./local');
-YoutubeTV.OMX = require("./omx")
+YoutubeTV.OMX = require('./omx')
+YoutubeTV.Utils = require('./utils')
 
 YoutubeTV.init = function(){
 	YoutubeTV.Video.init();

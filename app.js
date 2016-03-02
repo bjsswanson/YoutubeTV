@@ -20,6 +20,7 @@ server.timeout = 0;
 
 var YoutubeTV = require('./modules/youtubetv');
 YoutubeTV.IO = require('socket.io').listen(server);
+YoutubeTV.init();
 
 app.engine('hbs', expressHbs({extname:'hbs', defaultLayout:'main.hbs'}));
 app.set('view engine', 'hbs');
