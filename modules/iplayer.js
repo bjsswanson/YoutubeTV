@@ -15,7 +15,7 @@ function findIPlayerFile(id, callback) {
 		if (files) {
 			files.forEach(function (element) {
 				if (YoutubeTV.Utils.contains(element, id) && YoutubeTV.Utils.endsWith(element, "flv")) {
-					iPlayerFile = path + "/" + element;
+					iPlayerFile = IPLAYER_FOLDER + "/" + element;
 				}
 			});
 		}
