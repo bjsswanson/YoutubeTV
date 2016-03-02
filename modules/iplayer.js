@@ -16,7 +16,7 @@ function downloadIPlayer(video){
 		if(!iPlayerFile) {
 			console.log("Adding iPlayer video for download")
 			YoutubeTV.IPlayerQueue.push(video);
-			if(YoutubeTV.IPlayerQueue.push(video) === 1){
+			if(YoutubeTV.IPlayerQueue.length === 1){
 				processIPlayerQueue();
 			}
 		}
