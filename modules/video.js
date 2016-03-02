@@ -173,7 +173,7 @@ function bindEvents( io, socket ){
 
 function loadPlaying(){
 	try {
-		var file = fs.readFileSync(__dirname + '/videos.json').toString();
+		var file = fs.readFileSync(__dirname + '/../videos.json').toString();
 		YoutubeTV.Playing = JSON.parse(file);
 		if(YoutubeTV.Playing.length > 0) {
 			play(YoutubeTV.Playing[0]);
