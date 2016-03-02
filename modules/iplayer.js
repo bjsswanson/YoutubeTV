@@ -37,8 +37,12 @@ function processIPlayerQueue() {
 function downloadIPlayerFiles(url, callback){
 	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER]);
 	subs.on('exit', function(){
+		subs.kill();
+		console.log('Subtitles downloaded: ', url);
 		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER]);
 		video.on('exit', function(){
+			video.kill();
+			console.log('Video downloaded: ', url);
 			callback();
 		})
 	})
