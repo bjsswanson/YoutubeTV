@@ -1,5 +1,4 @@
-
-var YoutubeTV = YoutubeTV || {};
+YoutubeTV = {};
 
 var google = require('googleapis');
 var key = require('fs').readFileSync(__dirname + '/../api.key').toString();

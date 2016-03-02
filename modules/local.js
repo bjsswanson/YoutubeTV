@@ -1,4 +1,3 @@
-var YoutubeTV = require('./youtubetv');
 var fs = require('fs');
 var diskspace = require('diskspace');
 

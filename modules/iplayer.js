@@ -1,4 +1,3 @@
-var YoutubeTV = require('./youtubetv');
 var fs = require('fs');
 var child_process = require('child_process');
 
