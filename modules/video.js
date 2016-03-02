@@ -212,14 +212,17 @@ function removeVideo( io, id ){
 }
 
 function addVideo( url, callback ){
-	var playlistId = getPlaylistId(url);
-	var videoId = getVideoId(url);
+	var youtubeChannel = getYoutubeChannelId(url);
+	var youtubePlaylist = getYoutubePlaylistId(url);
+	var youtubeVideo = getYoutubeVideoId(url);
 	if(isIPlayer(url)){
 		createIPlayerVideo(url, callback)
-	} else if(playlistId){
-		createYoutubePlaylist(playlistId, callback);
-	} else if(videoId) {
-		createYoutubeVideo(videoId, callback);
+	} else if(youtubeChannel){
+		createYoutubeChannel(youtubeChannel, callback);
+	} else if(youtubePlaylist){
+		createYoutubePlaylist(youtubePlaylist, callback);
+	} else if(youtubeVideo) {
+		createYoutubeVideo(youtubeVideo, callback);
 	} else {
 		createLocalVideo(url, callback );
 	}
@@ -291,6 +294,23 @@ function createYoutubePlaylist( playlistId, callback ){
 	}
 };
 
+function createYoutubeChannel( channelId, callback ){
+	if(channelId != undefined){
+		YoutubeTV.Youtube.channels.list({
+			id: channelId,
+			part: 'contentDetails',
+			maxResults:  50
+		}, function(err, data, res){
+			if(data != undefined && data.items.length > 0){
+				var playlistId = data.items[0].contentDetails.relatedPlaylists.uploads;
+				if(playlistId){
+					createYoutubePlaylist(playlistId, callback);
+				}
+			}
+		});
+	}
+};
+
 function createLocalVideo( url, callback ){
 	if(url != undefined && url.length > 0){
 		fs.exists(url, function(exists) {
@@ -330,18 +350,31 @@ function getIndex( id ){
 	return -1;
 }
 
-function getVideoId( url ){
-	var url_parts = URLHelper.parse(url, true);
-	var query = url_parts.query;
-	var query_parts = QSHelper.parse(query);
-	return query_parts['v'];
+function getYoutubeVideoId(url ){
+	var youtube = YoutubeTV.Utils.contains(url, "youtube");
+	if(youtube) {
+		var url_parts = URLHelper.parse(url, true);
+		var query = url_parts.query;
+		var query_parts = QSHelper.parse(query);
+		return query_parts['v'];
+	}
 }
 
-function getPlaylistId( url ){
-	var url_parts = URLHelper.parse(url, true);
-	var query = url_parts.query;
-	var query_parts = QSHelper.parse(query);
-	return query_parts['list'];
+function getYoutubePlaylistId(url ){
+	var youtube = YoutubeTV.Utils.contains(url, "youtube");
+	if(youtube) {
+		var url_parts = URLHelper.parse(url, true);
+		var query = url_parts.query;
+		var query_parts = QSHelper.parse(query);
+		return query_parts['list'];
+	}
+}
+
+function getYoutubeChannelId( url ){
+	var youtube = YoutubeTV.Utils.contains(url, "youtube");
+	if(youtube) {
+		return YoutubeTV.Utils.substringAfterLast(url, "channel/");
+	}
 }
 
 function isIPlayer(url){
