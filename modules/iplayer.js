@@ -35,11 +35,11 @@ function processIPlayerQueue() {
 }
 
 function downloadIPlayerFiles(url, callback){
-	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER]);
+	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
 	subs.on('exit', function(){
 		subs.kill();
 		console.log('Subtitles downloaded: ', url);
-		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER]);
+		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
 		video.on('exit', function(){
 			video.kill();
 			console.log('Video downloaded: ', url);
