@@ -28,7 +28,7 @@ function processIPlayerQueue() {
 	   	var next = YoutubeTV.IPlayerQueue[0];
 		console.log("Downloading iPlayer video: ", next.url);
 		downloadIPlayerFiles(next.url, function(){
-			YoutubeTV.IPlayerQueue.pop();
+			YoutubeTV.IPlayerQueue.shift();
 			processIPlayerQueue();
 		});
 	}
