@@ -7,6 +7,7 @@ var endMinute = 30;
 
 var URLHelper = require('url');
 var QSHelper = require('qs');
+var fs = require('fs');
 
 function play( item ) {
 	var omx = YoutubeTV.OMX;
