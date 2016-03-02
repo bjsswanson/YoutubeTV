@@ -184,7 +184,7 @@ function loadPlaying(){
 }
 
 function savePlaying(){
-	fs.writeFile(__dirname + '/videos.json', JSON.stringify(YoutubeTV.Playing));
+	fs.writeFile(__dirname + '/../videos.json', JSON.stringify(YoutubeTV.Playing));
 }
 
 function downloadIPlayer(video){
