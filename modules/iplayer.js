@@ -14,7 +14,7 @@ function playIPlayer(id, callback){
 function downloadIPlayer(video){
 	findIPlayerFile(video.id, function(iPlayerFile){
 		if(!iPlayerFile) {
-			console.log("Adding iPlayer video for download")
+			console.log("Adding iPlayer video for download: " + video.url)
 			YoutubeTV.IPlayerQueue.push(video);
 			if(YoutubeTV.IPlayerQueue.length === 1){
 				processIPlayerQueue();
