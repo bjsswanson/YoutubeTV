@@ -14,6 +14,7 @@ function playIPlayer(id, callback){
 function downloadIPlayer(video){
 	findIPlayerFile(video.id, function(iPlayerFile){
 		if(!iPlayerFile) {
+			console.log("Adding iPlayer video for download")
 			YoutubeTV.IPlayerQueue.push(video);
 			if(YoutubeTV.IPlayerQueue.push(video) === 1){
 				processIPlayerQueue();
@@ -24,8 +25,9 @@ function downloadIPlayer(video){
 
 function processIPlayerQueue() {
 	if(YoutubeTV.IPlayerQueue.length > 0){
-	   var next = YoutubeTV.IPlayerQueue[0];
-		downloadIPlayerFiles(next.url, next.id, function(){
+	   	var next = YoutubeTV.IPlayerQueue[0];
+		console.log("Downloading iPlayer video: ", next.url);
+		downloadIPlayerFiles(next.url, function(){
 			YoutubeTV.IPlayerQueue.pop();
 			processIPlayerQueue();
 		});
@@ -33,9 +35,9 @@ function processIPlayerQueue() {
 }
 
 function downloadIPlayerFiles(url, callback){
-	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
+	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER]);
 	subs.on('exit', function(){
-		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
+		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER]);
 		video.on('exit', function(){
 			callback();
 		})
