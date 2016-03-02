@@ -19,7 +19,7 @@ function play( item ) {
 			omx.start(youtubeUrl, next);
 		});
 	} else if(item.type == 'iplayer'){
-		iplayer.streamIPlayer(item.id, next);
+		iplayer.playIPlayer(item.id, next);
 	} else {
 		omx.start(item.url, next);
 	}
@@ -189,7 +189,7 @@ function savePlaying(){
 
 function downloadIPlayer(video){
 	if(video.type === 'iplayer'){
-		YoutubeTV.IPlayer.downloadIPlayer(video.url, video.id);
+		YoutubeTV.IPlayer.downloadIPlayer(video);
 	}
 }
 

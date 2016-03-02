@@ -3,9 +3,42 @@ var child_process = require('child_process');
 
 var IPLAYER_FOLDER = YoutubeTV.USBDRIVE + "/IPLAYER";
 
-function streamIPlayer(id, callback){
+YoutubeTV.IPlayerQueue = [];
+
+function playIPlayer(id, callback){
 	findIPlayerFile(id, function(iPlayerFile){
 		YoutubeTV.OMX.start(iPlayerFile, callback);
+	})
+}
+
+function downloadIPlayer(video){
+	findIPlayerFile(video.id, function(iPlayerFile){
+		if(!iPlayerFile) {
+			YoutubeTV.IPlayerQueue.push(video);
+			if(YoutubeTV.IPlayerQueue.push(video) === 1){
+				processIPlayerQueue();
+			}
+		}
+	});
+}
+
+function processIPlayerQueue() {
+	if(YoutubeTV.IPlayerQueue.length > 0){
+	   var next = YoutubeTV.IPlayerQueue[0];
+		downloadIPlayerFiles(next.url, next.id, function(){
+			YoutubeTV.IPlayerQueue.pop();
+			processIPlayerQueue();
+		});
+	}
+}
+
+function downloadIPlayerFiles(url, callback){
+	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
+	subs.on('exit', function(){
+		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
+		video.on('exit', function(){
+			callback();
+		})
 	})
 }
 
@@ -23,17 +56,8 @@ function findIPlayerFile(id, callback) {
 	});
 }
 
-function downloadIPlayer(url, id){
-	findIPlayerFile(id, function(iPlayerFile){
-		if(!iPlayerFile){
-			child_process.spawn("get_iplayer", [url, "--raw", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
-			child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", IPLAYER_FOLDER], { stdio: 'inherit' });
-		}
-	})
-}
-
 var expose = {
-	streamIPlayer: streamIPlayer,
+	playIPlayer: playIPlayer,
 	downloadIPlayer: downloadIPlayer
 }
 
