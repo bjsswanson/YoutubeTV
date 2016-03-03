@@ -217,12 +217,12 @@ function addVideo( url, callback ){
 	var youtubeVideo = getYoutubeVideoId(url);
 	if(isIPlayer(url)){
 		createIPlayerVideo(url, callback)
-	} else if(youtubeChannel){
-		createYoutubeChannel(youtubeChannel, callback);
-	} else if(youtubePlaylist){
+	}  else if(youtubePlaylist){
 		createYoutubePlaylist(youtubePlaylist, callback);
 	} else if(youtubeVideo) {
 		createYoutubeVideo(youtubeVideo, callback);
+	} else if(youtubeChannel){
+		createYoutubeChannel(youtubeChannel, callback);
 	} else {
 		createLocalVideo(url, callback );
 	}
@@ -372,7 +372,8 @@ function getYoutubePlaylistId(url ){
 
 function getYoutubeChannelId( url ){
 	var youtube = YoutubeTV.Utils.contains(url, "youtube");
-	if(youtube) {
+	var channel =  YoutubeTV.Utils.contains("channel");
+	if(youtube && channel) {
 		return YoutubeTV.Utils.substringAfterLast(url, "channel/");
 	}
 }
