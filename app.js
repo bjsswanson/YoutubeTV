@@ -2,15 +2,6 @@ var express = require('express');
 var expressHbs = require('express-handlebars');
 var multer = require('multer');
 
-var storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, USB_DRIVE + "/UPLOAD")
-	},
-	filename: function (req, file, cb) {
-		cb(null, file.originalname)
-	}
-});
-var upload = multer({ storage: storage })
 var app = express();
 
 var port = 7000;
@@ -21,6 +12,16 @@ server.timeout = 0;
 var YoutubeTV = require('./modules/youtubetv');
 YoutubeTV.IO = require('socket.io').listen(server);
 YoutubeTV.init();
+
+var storage = multer.diskStorage({
+	destination: function (req, file, cb) {
+		cb(null, YoutubeTV.USBDRIVE + "/UPLOAD")
+	},
+	filename: function (req, file, cb) {
+		cb(null, file.originalname)
+	}
+});
+var upload = multer({ storage: storage })
 
 app.engine('hbs', expressHbs({extname:'hbs', defaultLayout:'main.hbs'}));
 app.set('view engine', 'hbs');
