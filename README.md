@@ -13,12 +13,12 @@ Backend is Node.js
 
 node_modules include:
 
-*express - web application framework
-*express-handlebars - handlebars view engine for express
-*googleapis - connecting to Youtube Data API to retrieve video information
-*qs - parsing user provided Youtube Urls
-*socket.io - to pass added/removed/playing video information to all connected clients in real time
-*diskspace - used to determine the amount of remaining available space
-*multer - file upload handling
++ express - web application framework
++ express-handlebars - handlebars view engine for express
++ googleapis - connecting to Youtube Data API to retrieve video information
++ qs - parsing user provided Youtube Urls
++ socket.io - to pass added/removed/playing video information to all connected clients in real time
++ diskspace - used to determine the amount of remaining available space
++ multer - file upload handling
 
 Requires omxplayer and get_iplayer (both can be obtained via apt-get)
