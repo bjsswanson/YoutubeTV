@@ -1,39 +1,58 @@
+var config = require('../config');
 var fs = require('fs');
 var diskspace = require('diskspace');
 
-var readFiles = function(dir) {
-	var results = [];
-	try {
-		var list = fs.readdirSync(dir)
-		list.forEach(function(file) {
-			if (showFile(file)) {
-				file = dir + '/' + file
-				var stat = fs.statSync(file)
-				if (stat && stat.isDirectory()) {
-					results = results.concat(readFiles(file))
-				} else {
-					results.push({"name": YoutubeTV.Utils.substringAfterLast(file, "/"), "path" : file});
-				}
+function addLocalVideo(url, callback){
+	if(url != undefined && url.length > 0){
+		fs.exists(url, function(exists) {
+			if (exists) {
+				var n = url.lastIndexOf('/');
+				var title = url.substring(n + 1);
+				var id = title.replace(/\W/g, '');
+
+				callback([{
+					type: 'local',
+					url: url,
+					id: id,
+					title: title,
+					image: ''
+				}]);
 			}
 		});
-	} catch (err) {
-		console.log(err)
 	}
+};
 
-	return results
+
+//TODO: Refactor to traverse sub directories
+var readFiles = function(dir, callback) {
+	fs.readdir(dir, function(err, files){
+		var results = [];
+		if(files) {
+			files.forEach(function (file) {
+				if (showFile(file)) {
+					var path = dir + '/' + file
+					results.push({"name": file, "path": path});
+				}
+			});
+		}
+
+		if(callback){
+			callback(results);
+		}
+	});
 }
 
 function showFile(file){
-	return !YoutubeTV.Utils.startsWith(file, ".")
-		&& !YoutubeTV.Utils.endsWith(file, "srt")
+	var utils = YoutubeTV.Utils;
+	return !utils.startsWith(file, ".")
+		&& !utils.endsWith(file, "srt")
 }
 
-function freeSpace( path ) {
+function freeSpace(path, callback) {
 	diskspace.check(path, function (err, total, free, status) {
 		var formattedSpace = humanReadableByteCount(free, false);
-		YoutubeTV.FreeSpace = formattedSpace;
+		callback(formattedSpace);
 	});
-	return YoutubeTV.FreeSpace;
 }
 
 function humanReadableByteCount(bytes, si) {
@@ -45,11 +64,32 @@ function humanReadableByteCount(bytes, si) {
 	return Math.round(b) + " " + pre + "B"
 }
 
-var expose = {
-	readFiles: readFiles,
-	freeSpace: freeSpace
-};
+function deleteLocal(id){
+	var omx = YoutubeTV.OMX;
+	var subtitles = omx.subtitles(id);
 
-freeSpace(YoutubeTV.USBDRIVE);
+	if(id) {
+		fs.exists(id, function (exists) {
+			if (exists) {
+				fs.unlink(id);
+			}
+		});
+	}
+
+	if(subtitles) {
+		fs.exists(subtitles, function (exists) {
+			if (exists) {
+				fs.unlink(subtitles);
+			}
+		});
+	}
+}
+
+var expose = {
+	addLocalVideo: addLocalVideo,
+	freeSpace: freeSpace,
+	readFiles: readFiles,
+	deleteLocal: deleteLocal
+};
 
 module.exports = expose;

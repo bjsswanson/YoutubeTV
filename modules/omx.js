@@ -7,19 +7,21 @@ function start( file, callback ) {
 		stop(function () {
 			var args = ["-o", "hdmi", file]
 
-			var subs = subtitles(file);
-			if (subs) {
-				args.push("--subtitles");
-				args.push(subs);
-			}
-
-			var cmd = child_process.spawn("omxplayer", args);
-			console.log("Playing:", file.substr(0, 80));
-			cmd.on('exit', function (code, signal) {
-				cmd.kill();
-				if (code == 0 && callback) {
-					callback();
+			subtitles(file, function(subs){
+				if (subs) {
+					args.push("--subtitles");
+					args.push(subs);
 				}
+
+				var cmd = child_process.spawn("omxplayer", args);
+				console.log("Playing:", file.substr(0, 80));
+				cmd.on('exit', function (code, signal) {
+					cmd.kill();
+					if (code == 0 && callback) {
+						callback();
+					}
+				});
+
 			});
 		});
 	} else {
@@ -28,29 +30,28 @@ function start( file, callback ) {
 	}
 };
 
-function subtitles( file ){
+function subtitles(file, callback){
 	if(file && file.lastIndexOf("/", 0) === 0){
-		var path = file.substr(0, file.lastIndexOf('.')) + ".srt";
-		var path2 = file.substr(0, file.indexOf('.')) + ".srt";
-		var exists = fs.existsSync(path);
-		var exists2 = fs.existsSync(path2);
-		if(exists){ return path; }
-		if(exists2){ return path2; }
+		var fileSubs = file.substr(0, file.lastIndexOf('.')) + ".srt";
+		var iPlayerSubs = file.substr(0, file.indexOf('.')) + ".srt";
+
+		fs.stat(fileSubs, function(err, stats){
+			if(!err){
+				callback(fileSubs);
+			} else {
+				fs.stat(iPlayerSubs, function(err, stats){
+					if(!err){
+						callback(iPlayerSubs);
+					} else {
+						callback();
+					}
+				})
+			}
+		})
+	} else {
+		callback();
 	}
 };
-
-function getYoutubeUrl(video, callback) {
-	var yt = child_process.spawn("youtube-dl", ["-f", "38/37/46/22/35/34/18/6/5/17/13", "-g", video]);
-	var url = "";
-	yt.stdout.on('data', function (data) {
-		url += data.toString('utf8');
-	});
-	yt.stdout.on('close', function () {
-		yt.kill();
-		var realUrl = decodeURI(url).trim();
-		callback(realUrl);
-	});
-}
 
 function stop( callback ) {
 	exec('pkill -f omxplayer' , callback);
@@ -60,8 +61,7 @@ stop(); // Clean up omxplayer on start
 expose = {
 	start: start,
 	stop: stop,
-	subtitles: subtitles,
-	getYoutubeUrl: getYoutubeUrl
+	subtitles: subtitles
 }
 
 module.exports = expose;
