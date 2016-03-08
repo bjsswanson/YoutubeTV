@@ -1,6 +1,6 @@
 Node based solution for playing iPlayer, Youtube and uploaded videos remotely through a TV via a connected RaspberryPi.
 
-iPlayer videos, Youtube videos, playlists <sup>*</sup> and channels <sup>*</sup> can be entered into the left hand box and the system will add them to the list of currently playing videos on the right.
+iPlayer videos, Youtube videos, playlists and channels can be entered into the left hand box and the system will add them to the list of currently playing videos on the right.
 
 Google API key required in the config.js file.
 
@@ -21,5 +21,3 @@ diskspace - used to determine the amount of remaining available space
 multer - file upload handling
 
 Requires omxplayer and get_iplayer (both can be obtained via apt-get)
-
-<sup>*</sup> First 50 videos
