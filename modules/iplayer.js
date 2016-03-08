@@ -78,12 +78,12 @@ function downloadIPlayerFiles(url, callback){
 
 function findIPlayerFile(id, callback) {
 	var utils = YoutubeTV.Utils;
-	fs.readdir(IPLAYER_FOLDER, function (err, files) {
+	fs.readdir(config.mediaDir, function (err, files) {
 		var iPlayerFile;
 		if (files) {
 			files.forEach(function (element) {
 				if (utils.contains(element, id) && utils.endsWith(element, "flv")) {
-					iPlayerFile = IPLAYER_FOLDER + "/" + element;
+					iPlayerFile = config.mediaDir + "/" + element;
 				}
 			});
 		}
