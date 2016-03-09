@@ -18,13 +18,16 @@ function contains(str, find){
 	return str.indexOf(find) !== -1;
 }
 
-
+function equals(str, str2){
+	return str === str2;
+}
 
 var expose = {
 	substringAfterLast: substringAfterLast,
 	startsWith: startsWith,
 	endsWith: endsWith,
-	contains: contains
+	contains: contains,
+	equals: equals
 };
 
 module.exports = expose;

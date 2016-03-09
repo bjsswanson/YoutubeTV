@@ -1,6 +1,9 @@
 var config = require('../config');
 var fs = require('fs');
+var path = require('path');
 var diskspace = require('diskspace');
+var child_process = require('child_process');
+var execFile = child_process.execFile;
 
 function addLocalVideo(url, callback){
 	if(url != undefined && url.length > 0){
@@ -22,28 +25,31 @@ function addLocalVideo(url, callback){
 	}
 };
 
+function readFiles(dir, callback) {
+	if(callback){
+		execFile('find', [ dir, "-type", "f" ], function(err, stdout, stderr) {
+			var file_list = stdout.split('\n');
+			if(file_list){
+				var filtered = [];
 
-//TODO: Refactor to traverse sub directories
-var readFiles = function(dir, callback) {
-	fs.readdir(dir, function(err, files){
-		var results = [];
-		if(files) {
-			files.forEach(function (file) {
-				if (showFile(file)) {
-					var path = dir + '/' + file
-					results.push({"name": file, "path": path});
-				}
-			});
-		}
+				file_list.forEach(function(file){
+					file = path.normalize(file);
+					parse = path.parse(file);
 
-		if(callback){
-			callback(results);
-		}
-	});
+					if(showFile(parse.base)){
+						filtered.push({"name": parse.name, "path" : file});
+					}
+				});
+
+				callback(filtered);
+			}
+		});
+	}
 }
 
 function showFile(file){
 	var utils = YoutubeTV.Utils;
+
 	return !utils.startsWith(file, ".")
 		&& !utils.endsWith(file, "srt")
 }

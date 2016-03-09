@@ -1,5 +1,5 @@
-var child_process = require('child_process');
 var fs = require('fs');
+var child_process = require('child_process');
 var exec = child_process.exec;
 
 function start( file, callback ) {
@@ -21,7 +21,6 @@ function start( file, callback ) {
 						callback();
 					}
 				});
-
 			});
 		});
 	} else {
@@ -32,26 +31,37 @@ function start( file, callback ) {
 
 function subtitles(file, callback){
 	if(file && file.lastIndexOf("/", 0) === 0){
-		var fileSubs = file.substr(0, file.lastIndexOf('.')) + ".srt";
-		var iPlayerSubs = file.substr(0, file.indexOf('.')) + ".srt";
-
-		fs.stat(fileSubs, function(err, stats){
-			if(!err){
-				callback(fileSubs);
-			} else {
-				fs.stat(iPlayerSubs, function(err, stats){
-					if(!err){
-						callback(iPlayerSubs);
-					} else {
-						callback();
-					}
-				})
-			}
-		})
+		var subFiles = subtitleFiles(file);
+		findSubtitles(subFiles, callback);
 	} else {
 		callback();
 	}
 };
+
+function subtitleFiles(file) {
+	var arr = [];
+	while (file.indexOf('.') > -1) {
+		file = file.substr(0, file.lastIndexOf('.'));
+		arr.push(file);
+	}
+	return arr;
+}
+
+function findSubtitles(arr, callback){
+	if(arr.length) {
+		var sub = arr.shift() + ".srt";
+		fs.stat(sub, function (err, stats) {
+			if (!err) {
+				callback(sub);
+			} else {
+				findSubtitles(arr, callback);
+			}
+		});
+	} else {
+		callback();
+	}
+}
+
 
 function stop( callback ) {
 	exec('pkill -f omxplayer' , callback);
