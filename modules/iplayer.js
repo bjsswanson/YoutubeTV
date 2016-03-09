@@ -56,9 +56,10 @@ function processIPlayerQueue() {
 	var iPlayerQueue = YoutubeTV.IPlayerQueue;
 	var sockets = YoutubeTV.Sockets;
 	if(iPlayerQueue.length > 0){
-	   	var next = iPlayerQueue.shift();
+	   	var next = iPlayerQueue[0];
 		console.log("Downloading iPlayer video: ", next.url);
 		downloadIPlayerFiles(next.url, function(){
+			YoutubeTV.IPlayerQueue.shift();
 			sockets.emit('iPlayerDone', next);
 			processIPlayerQueue();
 		});
