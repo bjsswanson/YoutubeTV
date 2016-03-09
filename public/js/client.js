@@ -1,5 +1,6 @@
-var socket = io.connect();
 $(function() {
+	var socket = io.connect();
+
 	var playingSource = $("#list-item-template").html();
 	var playingTemplate = Handlebars.compile(playingSource);
 
