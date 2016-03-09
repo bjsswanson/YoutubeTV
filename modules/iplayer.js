@@ -79,6 +79,7 @@ function downloadIPlayerFiles(next, callback){
 			var progress = str.match(/\(([0-9]{1,3}\.[0-9])\%\)/g);
 			if(progress){
 				next.progress = progress[progress.length - 1];
+				console.log(next.title, " - ", next.progress);
 				sockets.emit('iPlayerProgress', next);
 			}
 		});
