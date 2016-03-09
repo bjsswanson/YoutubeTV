@@ -1,86 +1,12 @@
 var socket = io.connect();
 $(function() {
+	var playingSource = $("#list-item-template").html();
+	var playingTemplate = Handlebars.compile(playingSource);
 
-	$(document).on('change', '.btn-file :file', function() {
-		var input = $(this),
-			numFiles = input.get(0).files ? input.get(0).files.length : 1,
-			label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-		input.trigger('fileselect', [numFiles, label]);
-	});
+	var iPlayerSource = $("#iPlayer-queue-template").html();
+	var iPlayerTemplate = Handlebars.compile(iPlayerSource);
 
-	$(document).ready( function() {
-		$('.btn-file :file').on('fileselect', function(event, numFiles, label) {
-
-			var input = $(this).parents('.input-group').find(':text'),
-				log = numFiles > 1 ? numFiles + ' files selected' : label;
-
-			if( input.length ) {
-				input.val(log);
-			} else {
-				if( log ) alert(log);
-			}
-
-		});
-	});
-
-	$(document).on('click', '#uploadButton', function() {
-		var button = $('#uploadButton');
-		if(!button.prop('disabled'))  {
-			button.prop('disabled', true);
-			button.text('Uploading...')
-
-			var input = $('#uploadFile');
-			var fd = new FormData();
-
-			$.each(input[0].files, function(file) {
-				fd.append("file" + file, this);
-			})
-
-			$.ajax({
-				xhr: progress,
-				url: '/upload',
-				data: fd,
-				processData: false,
-				contentType: false,
-				type: 'POST'
-			});
-		}
-	});
-
-	$(document).on('click', '#videos .play', function(e) {
-		var li = $(e.currentTarget).closest('li');
-		var id = li.attr('id');
-		socket.emit('play', id)
-	})
-
-	$(document).on('click', '#videos .remove', function(e) {
-		var li = $(e.currentTarget).closest('li');
-		var id = li.attr('id');
-		socket.emit('removeVideo', id)
-	})
-
-	$(document).on('click', '#playCurrent', function(e) {
-		socket.emit('playCurrent')
-	})
-
-	$(document).on('click', '#stopCurrent', function(e) {
-		socket.emit('stopCurrent')
-	})
-
-	$.fn.insertIndex = function (item, i) {
-		if (i === 0) {
-			this.prepend(item);
-		} else {
-			var $target = this.children().eq(i - 1);
-			if ($target.length > 0) {
-				$target.after(item);
-			} else {
-				this.append(item);
-			}
-		}
-
-		return this;
-	};
+	iPlayerQueueEmpty(function(){ $('.iPlayer').slideUp(); });
 
 	function progress() {
 		var button = $('#uploadButton');
@@ -107,6 +33,86 @@ $(function() {
 		}, false);
 
 		return xhr;
+	}
+
+	function events(){
+		$(document).on('change', '.btn-file :file', function() {
+			var input = $(this);
+			var numFiles = input.get(0).files ? input.get(0).files.length : 1;
+			var label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+			input.trigger('fileselect', [numFiles, label]);
+		});
+
+		$(document).ready( function() {
+			$('.btn-file :file').on('fileselect', function(event, numFiles, label) {
+				var input = $(this).parents('.input-group').find(':text');
+				var log = numFiles > 1 ? numFiles + ' files selected' : label;
+				if( input.length ) {
+					input.val(log);
+				} else {
+					if( log ) alert(log);
+				}
+			});
+		});
+
+		$(document).on('click', '#uploadButton', function() {
+			var button = $('#uploadButton');
+			if(!button.prop('disabled'))  {
+				button.prop('disabled', true);
+				button.text('Uploading...')
+
+				var input = $('#uploadFile');
+				var fd = new FormData();
+
+				$.each(input[0].files, function(file) {
+					fd.append("file" + file, this);
+				})
+
+				$.ajax({
+					xhr: progress,
+					url: '/upload',
+					data: fd,
+					processData: false,
+					contentType: false,
+					type: 'POST'
+				});
+			}
+		});
+
+		$(document).on('click', '#videos .play', function(e) {
+			var li = $(e.currentTarget).closest('li');
+			var id = li.attr('id');
+			socket.emit('play', id)
+		})
+
+		$(document).on('click', '#videos .remove', function(e) {
+			var li = $(e.currentTarget).closest('li');
+			var id = li.attr('id');
+			socket.emit('removeVideo', id)
+		})
+
+		$(document).on('click', '#playCurrent', function(e) {
+			socket.emit('playCurrent')
+		})
+
+		$(document).on('click', '#stopCurrent', function(e) {
+			socket.emit('stopCurrent')
+		})
+
+		$.fn.insertIndex = function (item, i) {
+			if (i === 0) {
+				this.prepend(item);
+			} else {
+				var $target = this.children().eq(i - 1);
+				if ($target.length > 0) {
+					$target.after(item);
+				} else {
+					this.append(item);
+				}
+			}
+
+			return this;
+		};
 	}
 
 	function buttons() {
@@ -160,10 +166,6 @@ $(function() {
 		});
 	}
 
-	var iPlayerSource = $("#iPlayer-queue-template").html();
-	var iPlayerTemplate = Handlebars.compile(iPlayerSource);
-	iPlayerQueueEmpty(function(){ $('.iPlayer').slideUp(); })
-
 	function sockets() {
 		socket.on('addedVideo', function (data) {
 			addVideoToList(data);
@@ -196,15 +198,20 @@ $(function() {
 			}).remove();
 		})
 
-		socket.on('iplayerQueue', function(video){
+		socket.on('iPlayerQueue', function(data){
 			iPlayerQueueEmpty(function(){ $('.iPlayer').slideDown(); })
 
-			var item = iPlayerTemplate(video);
-			$('.iPlayerQueue').appendChild(item);
+			var item = iPlayerTemplate(data);
+			$('.iPlayerQueue').append(item);
 		})
 
-		socket.on('iPlayerDone', function(video){
-			(".iPlayerDownload[data-group='" + video.id + "']").remove();
+		socket.on('iPlayerProgress', function(data){
+			var progress = $(".iPlayerDownload[data-id='" + data.video.id + "'] > .iPlayerProgress");
+			progress.text(data.progress);
+		})
+
+		socket.on('iPlayerDone', function(data){
+			$(".iPlayerDownload[data-id='" + data.video.id + "']").remove();
 			iPlayerQueueEmpty(function(){ $('.iPlayer').slideUp(); })
 		})
 	}
@@ -225,9 +232,6 @@ $(function() {
 		$('#' + id).remove();
 	}
 
-	var playingSource = $("#list-item-template").html();
-	var playingTemplate = Handlebars.compile(playingSource);
-
 	function addVideoToList(data) {
 		var index = data.index;
 		var item = playingTemplate(data.video);
@@ -235,6 +239,7 @@ $(function() {
 	}
 
 	$(function () {
+		events();
 		buttons();
 		sockets();
 	});

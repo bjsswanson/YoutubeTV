@@ -47,12 +47,14 @@
 						<thead>
 							<tr>
 								<th class="col-md-9">iPlayer Queue</th>
+								<th class="col-md-3">Progress</th>
 							</tr>
 						</thead>
 							<tbody class="iPlayerQueue">
 								{{#each iPlayerQueue}}
-									<tr data-id="{{this.id}}">
-										<td>{{this.title}}</td>
+									<tr class="iPlayerDownload" data-id="{{this.video.id}}">
+										<td>{{this.video.title}}</td>
+										<td class="iPlayerProgress">{{this.progress}}</td>
 									</tr>
 								{{/each}}
 							</tbody>
@@ -151,8 +153,9 @@
 </div>
 
 <script id="iPlayer-queue-template" type="text/x-handlebars-template">
-	<tr data-id="\{{this.id}}">
-		<td>\{{this.title}}</td>
+	<tr class="iPlayerDownload" data-id="\{{this.video.id}}">
+		<td>\{{this.video.title}}</td>
+		<td class="iPlayerProgress">\{{this.progress}}</td>
 	</tr>
 </script>
 

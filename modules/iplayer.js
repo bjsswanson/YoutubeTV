@@ -37,13 +37,11 @@ function playIPlayer(id, callback){
 
 function downloadIPlayer(video){
 	var iPlayerQueue = YoutubeTV.IPlayerQueue;
-	var sockets = YoutubeTV.Sockets;
 	if(isIPlayer(video.url)) {
 		findIPlayerFile(video.id, function (iPlayerFile) {
 			if (!iPlayerFile) {
 				console.log("Adding iPlayer video for download: " + video.url)
-				iPlayerQueue.push(video);
-				sockets.emit('iPlayerQueue', video);
+				iPlayerQueue.push({video: video, progress: "(0%)"});
 				if (iPlayerQueue.length === 1) {
 					processIPlayerQueue();
 				}
@@ -57,8 +55,9 @@ function processIPlayerQueue() {
 	var sockets = YoutubeTV.Sockets;
 	if(iPlayerQueue.length > 0){
 	   	var next = iPlayerQueue[0];
-		console.log("Downloading iPlayer video: ", next.url);
-		downloadIPlayerFiles(next.url, function(){
+		console.log("Downloading iPlayer video: ", next.video.url);
+		sockets.emit('iPlayerQueue', next);
+		downloadIPlayerFiles(next, function(){
 			YoutubeTV.IPlayerQueue.shift();
 			sockets.emit('iPlayerDone', next);
 			processIPlayerQueue();
@@ -66,17 +65,29 @@ function processIPlayerQueue() {
 	}
 }
 
-function downloadIPlayerFiles(url, callback){
-	var subs = child_process.spawn("get_iplayer", [url, "--subtitles-only", "--output", config.mediaDir], { stdio: 'inherit' });
+function downloadIPlayerFiles(next, callback){
+	var sockets = YoutubeTV.Sockets;
+	var subs = child_process.spawn("get_iplayer", [next.video.url, "--subtitles-only", "--output", config.mediaDir], { stdio: 'inherit' });
 	subs.on('exit', function(){
 		subs.kill();
 		console.log('Subtitles downloaded: ', url);
-		var video = child_process.spawn("get_iplayer", [url, "--raw", "--output", config.mediaDir], { stdio: 'inherit' });
+
+		var video = child_process.spawn("get_iplayer", [next.video.url, "--raw", "--output", config.mediaDir]);
+
+		video.stdout.on('data', function(data){
+			var str = data.toString();
+			var progress = str.match(/\(([0-9]{1,3}\.[0-9])\%\)/g);
+			if(progress){
+				next.progress = progress[progress.length - 1];
+				sockets.emit('iPlayerProgress', next);
+			}
+		});
+
 		video.on('exit', function(){
 			video.kill();
-			console.log('Video downloaded: ', url);
+			console.log('Video downloaded: ', next.video.url);
 			callback();
-		})
+		});
 	})
 }
 
