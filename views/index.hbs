@@ -45,17 +45,17 @@
 				<div class="iPlayer">
 					<table class="table">
 						<thead>
-						<tr>
-							<th class="col-md-9">iPlayer Downloads</th>
-						</tr>
-						</thead>
-						<tbody>
-						{{#each iplayerQueue}}
-							<tr class="iPlayerDownload" data-id="{{this}}">
-								<td>{{this}}</td>
+							<tr>
+								<th class="col-md-9">iPlayer Queue</th>
 							</tr>
-						{{/each}}
-						</tbody>
+						</thead>
+							<tbody class="iPlayerQueue">
+								{{#each iPlayerQueue}}
+									<tr data-id="{{this.id}}">
+										<td>{{this.title}}</td>
+									</tr>
+								{{/each}}
+							</tbody>
 						</table>
 				</div>
 			</div>
@@ -149,6 +149,12 @@
         </div>
     </div>
 </div>
+
+<script id="iPlayer-queue-template" type="text/x-handlebars-template">
+	<tr data-id="\{{this.id}}">
+		<td>\{{this.title}}</td>
+	</tr>
+</script>
 
 <script id="list-item-template" type="text/x-handlebars-template">
 	<li id="\{{this.id}}" class="list-group-item">

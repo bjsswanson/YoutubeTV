@@ -19,6 +19,11 @@ function emitAdding( index, vid ) {
 	}
 };
 
+function emit(message, data){
+	var io = YoutubeTV.IO;
+	io.sockets.emit(message, data);
+}
+
 function initSockets(){
 	var io = YoutubeTV.IO;
 	io.sockets.on("connection", function( socket ){
@@ -108,6 +113,7 @@ function init(server){
 
 var expose = {
 	init: init,
+	emit: emit,
 	emitPlaying: emitPlaying,
 	emitRemoving: emitRemoving
 }

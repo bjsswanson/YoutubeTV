@@ -33,7 +33,7 @@ app.get('/', function(req, res){
 			res.render('index',
 				{
 					'playing' : YoutubeTV.Playing,
-					'iplayerQueue': YoutubeTV.IPlayerQueue,
+					'iPlayerQueue': YoutubeTV.IPlayerQueue,
 					'files': files,
 					'freeSpace': freeSpace
 				}

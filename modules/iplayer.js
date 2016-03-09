@@ -37,11 +37,13 @@ function playIPlayer(id, callback){
 
 function downloadIPlayer(video){
 	var iPlayerQueue = YoutubeTV.IPlayerQueue;
+	var sockets = YoutubeTV.Sockets;
 	if(isIPlayer(video.url)) {
 		findIPlayerFile(video.id, function (iPlayerFile) {
 			if (!iPlayerFile) {
 				console.log("Adding iPlayer video for download: " + video.url)
 				iPlayerQueue.push(video);
+				sockets.emit('iPlayerQueue', video);
 				if (iPlayerQueue.length === 1) {
 					processIPlayerQueue();
 				}
@@ -52,11 +54,12 @@ function downloadIPlayer(video){
 
 function processIPlayerQueue() {
 	var iPlayerQueue = YoutubeTV.IPlayerQueue;
+	var sockets = YoutubeTV.Sockets;
 	if(iPlayerQueue.length > 0){
-	   	var next = iPlayerQueue[0];
+	   	var next = iPlayerQueue.shift();
 		console.log("Downloading iPlayer video: ", next.url);
 		downloadIPlayerFiles(next.url, function(){
-			YoutubeTV.IPlayerQueue.shift();
+			sockets.emit('iPlayerDone', next);
 			processIPlayerQueue();
 		});
 	}

@@ -160,6 +160,10 @@ $(function() {
 		});
 	}
 
+	var iPlayerSource = $("#iPlayer-queue-template").html();
+	var iPlayerTemplate = Handlebars.compile(iPlayerSource);
+	iPlayerQueueEmpty(function(){ $('.iPlayer').slideUp(); })
+
 	function sockets() {
 		socket.on('addedVideo', function (data) {
 			addVideoToList(data);
@@ -191,6 +195,25 @@ $(function() {
 				return $(this).data('local-path') === id
 			}).remove();
 		})
+
+		socket.on('iplayerQueue', function(video){
+			iPlayerQueueEmpty(function(){ $('.iPlayer').slideDown(); })
+
+			var item = iPlayerTemplate(video);
+			$('.iPlayerQueue').appendChild(item);
+		})
+
+		socket.on('iPlayerDone', function(video){
+			(".iPlayerDownload[data-group='" + video.id + "']").remove();
+			iPlayerQueueEmpty(function(){ $('.iPlayer').slideUp(); })
+		})
+	}
+
+	function iPlayerQueueEmpty(callback){
+		var length = $('.iPlayerQueue > tr').length;
+		if(length == 0){
+			callback();
+		}
 	}
 
 	function playing(id) {
@@ -202,12 +225,12 @@ $(function() {
 		$('#' + id).remove();
 	}
 
-	var source = $("#list-item-template").html();
-	var template = Handlebars.compile(source);
+	var playingSource = $("#list-item-template").html();
+	var playingTemplate = Handlebars.compile(playingSource);
 
 	function addVideoToList(data) {
 		var index = data.index;
-		var item = template(data.video);
+		var item = playingTemplate(data.video);
 		$('#videos').insertIndex(item, index);
 	}
 
