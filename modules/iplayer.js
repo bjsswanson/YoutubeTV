@@ -70,7 +70,7 @@ function downloadIPlayerFiles(next, callback){
 	var subs = child_process.spawn("get_iplayer", [next.video.url, "--subtitles-only", "--output", config.mediaDir], { stdio: 'inherit' });
 	subs.on('exit', function(){
 		subs.kill();
-		console.log('Subtitles downloaded: ', url);
+		console.log('Subtitles downloaded: ', next.video.url);
 
 		var video = child_process.spawn("get_iplayer", [next.video.url, "--raw", "--output", config.mediaDir]);
 
