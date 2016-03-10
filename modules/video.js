@@ -20,6 +20,7 @@ function play( item ) {
 
 function stop( callback ){
 	var omx = YoutubeTV.OMX;
+	console.log("Stopping current video.");
 	omx.stop(callback);
 };
 
