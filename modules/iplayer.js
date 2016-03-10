@@ -76,6 +76,7 @@ function downloadIPlayerFiles(next, callback){
 
 		video.stdout.on('data', function(data){
 			var str = data.toString();
+			console.log(str);
 			var progress = str.match(/\(([0-9]{1,3}\.[0-9])\%\)/g);
 			if(progress){
 				next.progress = progress[progress.length - 1];
