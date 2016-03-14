@@ -52,7 +52,7 @@ function findSubtitles(arr, callback){
 		var sub = arr.shift() + ".srt";
 		fs.stat(sub, function (err, stats) {
 			if (!err) {
-				callback(sub);
+				if(callback){ callback(sub); }
 			} else {
 				findSubtitles(arr, callback);
 			}
