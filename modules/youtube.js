@@ -50,7 +50,7 @@ function playlistId(url ){
 
 function channelId( url ){
 	var utils = YoutubeTV.Utils;
-	var channel =  utils.contains("channel");
+	var channel =  utils.contains(url, "channel");
 	if(channel) {
 		return utils.substringAfterLast(url, "channel/");
 	}
