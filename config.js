@@ -1,7 +1,7 @@
 var config = {}
 
-config.mediaDir = '/media/pi/MOVIES';
-config.googleApiKey = '';
+config.mediaDir = '/Volumes/Data/Anime';
+config.googleApiKey = 'AIzaSyC_wG5q1Wm7JOko671M4PfajvG8AQu_zlQ';
 config.port = 7000;
 
 config.startDay = 1; //Monday

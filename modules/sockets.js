@@ -1,3 +1,11 @@
+function emitCurrent(){
+	var video = YoutubeTV.Video;
+	var current = video.Current;
+	if(current) {
+		sockets.emitPlaying(item.id);
+	}
+}
+
 function emitPlaying( id ){
 	var io = YoutubeTV.IO;
 	io.sockets.emit('playing', id);
@@ -27,6 +35,7 @@ function emit(message, data){
 function initSockets(){
 	var io = YoutubeTV.IO;
 	io.sockets.on("connection", function( socket ){
+		emitCurrent();
 		bindEvents( io, socket );
 	});
 };
