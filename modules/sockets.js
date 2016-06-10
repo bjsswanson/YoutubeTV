@@ -1,8 +1,7 @@
 function emitCurrent(){
-	var video = YoutubeTV.Video;
-	var current = video.Current;
+	var current = YoutubeTV.Current;
 	if(current) {
-		sockets.emitPlaying(item.id);
+		emitPlaying(current.id);
 	}
 }
 
